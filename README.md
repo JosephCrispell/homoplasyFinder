@@ -6,5 +6,7 @@
 An R package for identifying homoplasies on a phylogeny
 
 Package can be directly installed into R using:
+```
 $ library("devtools")
 $ install_github("homoplasyFinder", "JosephCrispell")
+```
