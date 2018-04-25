@@ -1,4 +1,4 @@
-# Homoplasy Finder
+# HomoplasyFinder
 ## Author: Joseph Crispell
 ## Repository created: 25-04-18
 ## Licence: GPL-3
