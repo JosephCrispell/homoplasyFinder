@@ -23,10 +23,10 @@ Function to run HomoplasyFinder.jar file (java version of HomoplasyFinder)  with
 }
 \examples{
 # Run homoplasyFinder
-results <- runHomoplasyFinderJavaTool(fullPathToJarFile, fullPathToFastaFile, fullPathToTreeFile)
+results <- runHomoplasyFinderJavaTool("fullPathToJarFile", "fullPathToFastaFile", "fullPathToTreeFile")
 
 # Plot the results
-plotTreeAndHomoplasySites(read.tree(fullPathToTreeFile), results)
+plotTreeAndHomoplasySites(read.tree("fullPathToTreeFile"), results)
 }
 \keyword{HomoplasyFinder}
 \keyword{jar}
