@@ -1,10 +1,11 @@
 Package: homoplasyFinder
-Title: What the Package Does (one line, title case)
+Title: Tools to identify and plot homoplasies on a phylogenetic tree
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Authors@R: person("Joseph", "Crispell", email = "crispelljoseph@gmail.com", role = "cre")
 Description: What the package does (one paragraph).
 Depends: R (>= 3.3.3)
-License: What license is it under?
+Imports: ape, geiger
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1.9000
