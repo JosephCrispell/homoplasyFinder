@@ -8,4 +8,5 @@ Package can be directly installed into R using:
 ```
 $ library("devtools")
 $ install_github("JosephCrispell/homoplasyFinder")
+$ library(homoplasyFinder)
 ```
