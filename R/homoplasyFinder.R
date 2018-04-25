@@ -65,6 +65,9 @@ NULL
 #' plotTreeAndHomoplasySites(tree, results)
 plotTreeAndHomoplasySites <- function(tree, results, scale=TRUE){
 
+  # Load the ape library explicitely - needed to get tip coordinates
+  library(ape)
+  
   # Set the plotting margins
   par(mar=c(0,0,1,0.5))
 
