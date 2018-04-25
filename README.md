@@ -23,7 +23,7 @@ $
 $ # Plot the results
 $ plotTreeAndHomoplasySites(tree, results)
 ```
-OR the Java version of the tool can be run from within R:
+OR the Java version of the tool can be run from within R (THIS IS CURRENTLY CONSIDERABLY FASTER!!):
 ```
 $ # Run HomoplasyFinder
 $ results <- runHomoplasyFinderJavaTool("pathToJarFile", "pathToFastaFile", "pathToTreeFile")
