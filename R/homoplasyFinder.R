@@ -199,6 +199,9 @@ getTipCoordinates <- function(tipLabels){
 #' @examples
 #' # Run homoplasyFinder
 #' results <- runHomoplasyFinderJavaTool(fullPathToJarFile, fullPathToFastaFile, fullPathToTreeFile)
+#' 
+#' # Plot the results
+#' plotTreeAndHomoplasySites(read.tree(fullPathToTreeFile), results)
 #' @return Returns a data.frame detailing the Positions, Alleles and Isolates associated with homoplasies identified
 runHomoplasyFinderJavaTool <- function(jarFile, fastaFile, treeFile, verbose=TRUE){
 
