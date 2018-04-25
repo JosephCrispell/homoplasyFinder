@@ -2,7 +2,7 @@
 ## Author: Joseph Crispell
 ## Repository created: 25-04-18
 ## Licence: GPL-3
-An R package for identifying homoplasies on a phylogeny
+An R package for identifying and plotting homoplasies on a phylogeny
 
 Package can be directly installed into R using:
 ```
