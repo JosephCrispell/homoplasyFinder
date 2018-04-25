@@ -1,7 +1,8 @@
 # Homoplasy Finder
 
-# Author: Joseph Crispell
-# Repository created: 25-04-18
+## Author: Joseph Crispell
+## Repository created: 25-04-18
+## Licence: GPL-3
 
 An R package for identifying homoplasies on a phylogeny
 
