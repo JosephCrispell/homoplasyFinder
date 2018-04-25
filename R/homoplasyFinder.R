@@ -268,7 +268,7 @@ homoplasyFinder <- function(tree, sequencesDNABin, verbose=TRUE){
   nodes <- getNodes(tree)
 
   # Convert the DNAbin sequence alignment to alignment class
-  sequences <- as.alignment(sequencesDNABin)
+  sequences <- ape::as.alignment(sequencesDNABin)
 
   # Record the alleles present in FASTA sequences
   alleles <- recordAllelesInPopulation(sequences, verbose)
