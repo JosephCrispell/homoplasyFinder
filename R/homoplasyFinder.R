@@ -65,9 +65,6 @@ NULL
 #' plotTreeAndHomoplasySites(tree, results)
 plotTreeAndHomoplasySites <- function(tree, results, scale=TRUE){
 
-  # Load the ape library explicitely - needed to get tip coordinates
-  library(ape)
-  
   # Set the plotting margins
   par(mar=c(0,0,1,0.5))
 
@@ -178,7 +175,7 @@ maxCoordinates <- function(tipCoordinates){
 #' @keywords internal
 #' @return Returns an object of class "list" containing the X and Y coordinates of each tip in the currently plotted phylogenetic tree
 getTipCoordinates <- function(tipLabels){
-  lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+  lastPP <- get("last_plot.phylo", envir = ape::.PlotPhyloEnv)
   tips <- list()
   for(i in 1:length(tipLabels)){
     tips[[as.character(tipLabels[i])]] <- c(lastPP$xx[i], lastPP$yy[i])
@@ -199,7 +196,7 @@ getTipCoordinates <- function(tipLabels){
 #' @examples
 #' # Run homoplasyFinder
 #' results <- runHomoplasyFinderJavaTool("fullPathToJarFile", "fullPathToFastaFile", "fullPathToTreeFile")
-#' 
+#'
 #' # Plot the results
 #' plotTreeAndHomoplasySites(read.tree("fullPathToTreeFile"), results)
 #' @return Returns a data.frame detailing the Positions, Alleles and Isolates associated with homoplasies identified
