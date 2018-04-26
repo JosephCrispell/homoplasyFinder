@@ -24,7 +24,7 @@ results <- homoplasyFinder(tree, sequences)
 # Plot the results
 plotTreeAndHomoplasySites(tree, results)
 ```
-OR the Java version of the tool can be run from within R (THIS IS CURRENTLY CONSIDERABLY FASTER!!):
+OR the Java version of the tool can be run from within R (THIS IS MUCH FASTER BUT YOU'll NEED [JAVA](https://java.com/en/download/)):
 ```
 # Run HomoplasyFinder
 results <- runHomoplasyFinderJavaTool("pathToJarFile", "pathToFastaFile", "pathToTreeFile")
@@ -35,4 +35,4 @@ library(ape)
 # Plot the results
 plotTreeAndHomoplasySites(read.tree("pathToTreeFile"), results)
 ```
-The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/blob/master/ExecutableJarFiles/HomoplasyFinder_v1.jar) and [without](https://github.com/JosephCrispell/Java/blob/master/ExecutableJarFiles/HomoplasyFinder_25-04-18.jar) a graphical user interface.
+The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_v1.jar) and [without](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_25-04-18.jar) a graphical user interface.
