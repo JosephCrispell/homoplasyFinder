@@ -35,4 +35,4 @@ library(ape)
 # Plot the results
 plotTreeAndHomoplasySites(read.tree("pathToTreeFile"), results)
 ```
-The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_v1.jar) and [without](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_25-04-18.jar) a graphical user interface.
+The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_v1.jar) and [without](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_26-04-18.jar) a graphical user interface.
