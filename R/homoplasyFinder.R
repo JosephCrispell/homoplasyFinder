@@ -402,57 +402,72 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose){
   # Get an array of the postions of the alleles
   positions <- getAllelePositions(alleles)
 
-  # Initialise a hashtable to record which alleles were assigned
-  nodeAlleles <- list()
-
   # Initialise a vector to store the assigned alleles
-  assigned <- c()
+  unassigned <- c()
 
-  # Examine each node
-  for(i in 1:length(nodes)){
+  # Examine each position
+  count <- 0
+  for(position in positions){
+    count <- count + 1
 
     # Progress
     if(verbose){
-      cat(paste("\rAssigning alleles to node", i, "of", length(nodes)))
+      cat(paste("\rAssigning alleles at position", count, "of", length(positions)))
     }
 
-    # Get the isolates at the tips of the current node
-    tips <- nodes[[names(nodes)[i]]]
+    # Get the alleles at the current position and check that some are present
+    allelesAtPosition <- getAllelesAtPosition(position, alleles)
 
-    # Get the rest of the isolates
-    isolatesAbove <- isolates[isolates %in% tips == FALSE]
-
-    # Check and see if these isolates are associated with an allele
-    for(position in positions){
-
-      # Get the alleles at the current position and check that some are present
-      allelesAtPosition <- getAllelesAtPosition(position, alleles, assigned)
-      if(length(allelesAtPosition) == 0){
-        next
-      }
+    # Check position isn't constant - has more than one allele
+    if(length(allelesAtPosition) > 1){
 
       # Get the isolates with an "N" at the current allele's position
       isolatesWithN <- getIsolatesWithNsAtPosition(position, alleles)
 
-      # Remove the isolates with an "N" from those associated with the current node
-      tipsWithoutNs <- tips[tips %in% isolatesWithN == FALSE]
-      isolatesAboveWithoutNs <- isolatesAbove[isolatesAbove %in% isolatesWithN == FALSE]
+      # Initialise an array to record which of the alleles at the current position
+      assigned <- rep(FALSE, length(allelesAtPosition))
+      allAssigned <- FALSE
 
-      # Examine each of the unassigned alleles at the current position
-      for(allele in allelesAtPosition){
+      # Examine each node
+      for(i in 1:length(nodes)){
 
-        # Get the isolates with the current allele
-        isolatesWithAllele <- alleles[[allele]]
+        # Check if all alleles have been assigned
+        if(length(which(assigned == TRUE)) == length(allelesAtPosition)){
+          allAssigned <- TRUE
+          break
+        }
 
-        # Compare the two sets of alleles - if they match exactly then current allele can be assigned to node
-        if(areSetsOfIsolatesTheSame(tipsWithoutNs, isolatesWithAllele) == TRUE){
+        # Get the isolates at the tips of the current node
+        tips <- nodes[[i]]
 
-          nodeAlleles[[names(nodes)[i]]] <- c(nodeAlleles[[names(nodes)[i]]], allele)
-          assigned[length(assigned) + 1] <- allele
+        # Get the rest of the isolates
+        isolatesAbove <- isolates[isolates %in% tips == FALSE]
 
-        }else if(areSetsOfIsolatesTheSame(isolatesAboveWithoutNs, isolatesWithAllele) == TRUE){
-          nodeAlleles[[names(nodes)[i]]] <- c(nodeAlleles[[names(nodes)[i]]], allele)
-          assigned[length(assigned) + 1] <- allele
+        # Remove the isolates with an "N" from those associated with the current node
+        tipsWithoutNs <- tips[tips %in% isolatesWithN == FALSE]
+        isolatesAboveWithoutNs <- isolatesAbove[isolatesAbove %in% isolatesWithN == FALSE]
+
+        # Examine each allele
+        for(alleleIndex in 1:length(allelesAtPosition)){
+
+          # Get the isolates with the current allele
+          isolatesWithAllele <- alleles[[allelesAtPosition[alleleIndex]]]
+
+          # Compare the two sets of alleles - if they match exactly then current allele can be assigned to node
+          if(areSetsOfIsolatesTheSame(tipsWithoutNs, isolatesWithAllele) == TRUE ||
+             areSetsOfIsolatesTheSame(isolatesAboveWithoutNs, isolatesWithAllele) == TRUE){
+
+            assigned[alleleIndex] <- TRUE
+          }
+        }
+      }
+
+      if(allAssigned == FALSE){
+
+        for(alleleIndex in 1:length(allelesAtPosition)){
+          if(assigned[alleleIndex] == FALSE){
+            unassigned[length(unassigned) + 1] <- allelesAtPosition[alleleIndex]
+          }
         }
       }
     }
@@ -462,13 +477,7 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose){
     cat("\rFinished assigning alleles to nodes.\t\t\t\t\n")
   }
 
-  # Note the alleles that weren't assigned
-  notAssigned <- names(alleles)[names(alleles) %in% assigned == FALSE]
-
-  # Remove the N alleles
-  notAssigned <- notAssigned[grepl(notAssigned, pattern=":n") == FALSE]
-
-  return(notAssigned)
+  return(unassigned)
 }
 
 #' Get a vector of the alleles found at a given position that haven't already been assigned to a node
@@ -476,10 +485,9 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose){
 #' Function used by \code{assignAlellesToNodes()}
 #' @param position A character string detailing the position of interest
 #' @param alleles An object of class "list" recording the isolates associated with each allele produced by \code{recordAllelesInPopulation()}
-#' @param assigned A vector of strings recording the alleles that have been assigned to nodes
 #' @keywords internal
 #' @return Returns a vector of unassigned alleles found at the position provided
-getAllelesAtPosition <- function(position, alleles, assigned){
+getAllelesAtPosition <- function(position, alleles){
 
   # Initialise a vector to store the unassigned alleles at the current position
   output <- c()
@@ -493,8 +501,8 @@ getAllelesAtPosition <- function(position, alleles, assigned){
     # Create allele
     allele <- paste(position, nucleotide, sep=":")
 
-    # Check allele isn't assigned but is present in set of alleles (in population)
-    if(allele %in% assigned == FALSE && is.null(alleles[[allele]]) == FALSE){
+    # Check allele is present in set of alleles (in population)
+    if(is.null(alleles[[allele]]) == FALSE){
       output[length(output) + 1] <- allele
     }
   }
