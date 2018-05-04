@@ -276,9 +276,6 @@ homoplasyFinder <- function(tree, sequencesDNABin, verbose=TRUE){
   # Record the alleles present in FASTA sequences
   alleles <- recordAllelesInPopulation(sequences, verbose)
 
-  # Remove the constant sites (only one nucleotide present)
-  removeConstantSites(alleles, nchar(sequences$seq[1]), verbose)
-
   #### Assign alleles to nodes in phylogeny
 
   # Assign alelles to nodes in the phylogeny - where possible
@@ -289,43 +286,6 @@ homoplasyFinder <- function(tree, sequencesDNABin, verbose=TRUE){
   results <- reportHomoplasiesIdentified(notAssigned, alleles)
 
   return(results)
-}
-
-#' Remove constant sites
-#'
-#' Function used by \code{homoplasyFinder()} to remove constant sites (only one nucleotide observed across sequences)
-#' @param alleles An object of class "list" recording the isolates associated with each allele produced by \code{recordAllelesInPopulation()}
-#' @param nSites The number of positions in the nucleotide sequence alignment
-#' @keywords internal
-removeConstantSites <- function(alleles, nSites, verbose=TRUE){
-
-  nSitesRemoved <- 0
-
-  nucleotides <- c('a', 'c', 'g', 't')
-  for(position in 1:nSites){
-
-    # Count the number of alleles at the current position
-    count <- 0
-    for(nucleotide in nucleotides){
-      if(is.null(alleles[[paste(position, nucleotide, sep=":")]]) == FALSE){
-        count <- count + 1
-      }
-    }
-    # If only 1 allele present - remove it as it is a constant site (same across all isolates)
-    if(count == 1){
-      nSitesRemoved <- nSitesRemoved + 1
-      alleles[[paste(position, 'n', sep=":")]] <- NULL
-      for(nucleotide in nucleotides){
-        if(is.null(alleles[[paste(position, nucleotide, sep=":")]]) == FALSE){
-          alleles[[paste(position, nucleotide, sep=":")]] <- NULL
-        }
-      }
-    }
-  }
-
-  if(verbose){
-    cat(paste("Removed", nSitesRemoved, "constant site(s).\n"))
-  }
 }
 
 #' Summarise the results from homoplasyFinder() into results table
@@ -630,3 +590,4 @@ recordAllelesInPopulation <- function(sequences, verbose){
 
   return(alleles)
 }
+
