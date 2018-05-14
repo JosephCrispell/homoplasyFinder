@@ -4,7 +4,8 @@
 \alias{homoplasyFinder}
 \title{HomoplasyFinder - Identify homoplasies on phylogeny using its sequence alignment}
 \usage{
-homoplasyFinder(tree, sequencesDNABin, verbose = TRUE)
+homoplasyFinder(tree, sequencesDNABin, verbose = TRUE,
+  nThreads = parallel::detectCores())
 }
 \arguments{
 \item{tree}{An object of class "phylo"}
@@ -12,6 +13,8 @@ homoplasyFinder(tree, sequencesDNABin, verbose = TRUE)
 \item{sequencesDNABin}{An object containing FASTA formatted nucleotide sequences of class "DNAbin"}
 
 \item{verbose}{Print detailed progress information. Defaults to TRUE}
+
+\item{nThreads}{The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine}
 }
 \value{
 Returns a data.frame detailing the Positions, Alleles and Isolates associated with homoplasies identified

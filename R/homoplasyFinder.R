@@ -243,12 +243,52 @@ checkForSpaces <- function(filePath){
   return(filePath)
 }
 
+#' Register cluster to start parallel computation
+#'
+#' Function used by \code{homoplasyFinder()}
+#' @param nThreads The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine
+#' @keywords internal
+#' @return Returns an object of class "cluster" to start parallel computation or NULL if computation will be performed on one thread
+startCluster <- function(nThreads) {
+
+  # Get the number of threads in the current machine
+  nThreadsAvailable <- parallel::detectCores()
+
+  # Check that too many threads haven't been requested
+  if(nThreads > nThreadsAvailable){
+    nThreads <- nThreadsAvailable
+  }
+
+  # Check that at least one thread was requested
+  if(nThreads < 1){
+    nThreads <- 1
+  }
+
+  # If only one thread requested then set clusterOfThreads to NULL
+  if(nThreads == 1){
+
+    clusterOfThreads <- NULL
+
+    # If multiple threads requested - initialise a cluster to contain them
+  } else {
+
+    # Initialise the cluster of threads
+    clusterOfThreads <- parallel::makeCluster(nThreads)
+
+    # Register the cluster of threads
+    doParallel::registerDoParallel(clusterOfThreads, cores=nThreads)
+  }
+
+  return(clusterOfThreads)
+}
+
 #' HomoplasyFinder - Identify homoplasies on phylogeny using its sequence alignment
 #'
 #' Function to run HomoplasyFinder - R version. Note considerably slower than java version
 #' @param tree An object of class "phylo"
 #' @param sequencesDNABin An object containing FASTA formatted nucleotide sequences of class "DNAbin"
 #' @param verbose Print detailed progress information. Defaults to TRUE
+#' @param nThreads The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine
 #' @keywords HomoplasyFinder tool R
 #' @export
 #' @examples
@@ -263,7 +303,10 @@ checkForSpaces <- function(filePath){
 #' plotTreeAndHomoplasySites(tree, results)
 #'
 #' @return Returns a data.frame detailing the Positions, Alleles and Isolates associated with homoplasies identified
-homoplasyFinder <- function(tree, sequencesDNABin, verbose=TRUE){
+homoplasyFinder <- function(tree, sequencesDNABin, verbose=TRUE, nThreads=parallel::detectCores()) {
+
+  # Start the cluster of threads - note this will be null if only one thread requested
+  clusterOfThreads <- startCluster(nThreads)
 
   #### Parse tree and FASTA
 
@@ -274,16 +317,21 @@ homoplasyFinder <- function(tree, sequencesDNABin, verbose=TRUE){
   sequences <- ape::as.alignment(sequencesDNABin)
 
   # Record the alleles present in FASTA sequences
-  alleles <- recordAllelesInPopulation(sequences, verbose)
+  alleles <- recordAllelesInPopulation(sequences, verbose, clusterOfThreads)
 
   #### Assign alleles to nodes in phylogeny
 
   # Assign alelles to nodes in the phylogeny - where possible
-  notAssigned <- assignAllelesToNodes(nodes, alleles, sequences$nam, verbose)
+  notAssigned <- assignAllelesToNodes(nodes, alleles, sequences$nam, verbose, clusterOfThreads)
 
-  #### Report the homopalsies identified
+  #### Report the homoplasies identified
 
   results <- reportHomoplasiesIdentified(notAssigned, alleles)
+
+  # Close the cluster of threads, if one was initialised
+  if(is.null(clusterOfThreads) == FALSE){
+    parallel::stopCluster(clusterOfThreads)
+  }
 
   return(results)
 }
@@ -348,30 +396,27 @@ getPositions <- function(alleles){
   return(positions)
 }
 
-#' Assign alleles to nodes in a phylogeny
+#' A single thread of assigning alleles to nodes in a phylogeny for selected positions
 #'
-#' Function used by \code{homoplasyFinder()} to assign alleles (identified by an ID (Position:Nucleotide)) to nodes in a phylogeny
+#' Function used by \code{assignAllelesToNodes()} to assign alleles (identified by an ID (Position:Nucleotide)) to nodes in a phylogeny
 #' @param nodes An object of class "list" recording the tips (isolates) associated with each node in a phylogeny - produced by \code{getNodes()}
 #' @param alleles An object of class "list" recording the isolates associated with each allele produced by \code{recordAllelesInPopulation()}
 #' @param isolates An object of class "vector" containing "character" strings identifying isolates
-#' @param verbose Print detailed progress information. Defaults to TRUE
+#' @param positions
+#' @param verbose Print detailed progress information. Used only if run on a single thread. If run in parallel, it is ignored and set to FALSE.
 #' @keywords internal
 #' @return Returns an object of class "vector" with the IDs of alleles (Position:Nucleotide) not assigned to nodes on the phylogeny
-assignAllelesToNodes <- function(nodes, alleles, isolates, verbose){
-
-  # Get an array of the postions of the alleles
-  positions <- getAllelePositions(alleles)
+assignAllelesAtPositions <- function(nodes, alleles, isolates, positions, verbose) {
 
   # Initialise a vector to store the assigned alleles
   unassigned <- c()
 
-  # Examine each position
   count <- 0
-  for(position in positions){
-    count <- count + 1
-
+  # Examine each position
+  for(position in positions) {
     # Progress
-    if(verbose){
+    if(verbose) {
+      count <- count + 1
       cat(paste("\rAssigning alleles at position", count, "of", length(positions)))
     }
 
@@ -379,7 +424,7 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose){
     allelesAtPosition <- getAllelesAtPosition(position, alleles)
 
     # Check position isn't constant - has more than one allele
-    if(length(allelesAtPosition) > 1){
+    if(length(allelesAtPosition) > 1) {
 
       # Get the isolates with an "N" at the current allele's position
       isolatesWithN <- getIsolatesWithNsAtPosition(position, alleles)
@@ -389,10 +434,10 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose){
       allAssigned <- FALSE
 
       # Examine each node
-      for(i in 1:length(nodes)){
+      for(i in 1:length(nodes)) {
 
         # Check if all alleles have been assigned
-        if(length(which(assigned == TRUE)) == length(allelesAtPosition)){
+        if(length(which(assigned == TRUE)) == length(allelesAtPosition)) {
           allAssigned <- TRUE
           break
         }
@@ -408,29 +453,99 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose){
         isolatesAboveWithoutNs <- isolatesAbove[isolatesAbove %in% isolatesWithN == FALSE]
 
         # Examine each allele
-        for(alleleIndex in 1:length(allelesAtPosition)){
+        for(alleleIndex in 1:length(allelesAtPosition)) {
 
           # Get the isolates with the current allele
           isolatesWithAllele <- alleles[[allelesAtPosition[alleleIndex]]]
 
           # Compare the two sets of alleles - if they match exactly then current allele can be assigned to node
           if(areSetsOfIsolatesTheSame(tipsWithoutNs, isolatesWithAllele) == TRUE ||
-             areSetsOfIsolatesTheSame(isolatesAboveWithoutNs, isolatesWithAllele) == TRUE){
+             areSetsOfIsolatesTheSame(isolatesAboveWithoutNs, isolatesWithAllele) == TRUE) {
 
             assigned[alleleIndex] <- TRUE
           }
         }
       }
 
-      if(allAssigned == FALSE){
-
-        for(alleleIndex in 1:length(allelesAtPosition)){
-          if(assigned[alleleIndex] == FALSE){
-            unassigned[length(unassigned) + 1] <- allelesAtPosition[alleleIndex]
-          }
-        }
+      if(allAssigned == FALSE) {
+        unassigned <- c(unassigned, allelesAtPosition[!assigned])
       }
     }
+  }
+
+  return(unassigned)
+}
+
+#' Split a vector into elements of a list in order to send each to a separate thread
+#'
+#' Function used by \code{assignAlellesToNodes()}
+#' @param vector An object of class "vector" to split into multiple parts
+#' @param nParts An integer specifying the number parts the vector is to be split into
+#' @keywords internal
+#' @return Returns an object of class "list" of subsets of the input "vector"
+splitVectorIntoParts <- function(vector, nParts){
+
+  # Calculate the number of values for each part
+  nValuesPerPart <- ceiling(length(vector) / nParts)
+
+  # Initialise a list to the parts
+  parts <- list()
+
+  # Get each part
+  for(i in 1:nParts){
+
+    # Calculate the start and end of the current part
+    start <- ((i-1)*nValuesPerPart) + 1
+    end <- (start + nValuesPerPart) - 1
+
+    # Check end isn't more than vector length
+    if(end > length(vector)){
+      end <- length(vector)
+    }
+
+    # Store the current part
+    parts[[i]] <- vector[start:end]
+  }
+
+  return(parts)
+}
+
+#' Assign alleles to nodes in a phylogeny
+#'
+#' Function used by \code{homoplasyFinder()} to assign alleles (identified by an ID (Position:Nucleotide)) to nodes in a phylogeny
+#' @param nodes An object of class "list" recording the tips (isolates) associated with each node in a phylogeny - produced by \code{getNodes()}
+#' @param alleles An object of class "list" recording the isolates associated with each allele produced by \code{recordAllelesInPopulation()}
+#' @param isolates An object of class "vector" containing "character" strings identifying isolates
+#' @param verbose Print detailed progress information
+#' @param clusterOfThreads An object of class "cluster" to perform parallel computation. If NULL, the computation is performed on a single thread. Defaults to NULL
+#' @keywords internal
+#' @return Returns an object of class "vector" with the IDs of alleles (Position:Nucleotide) not assigned to nodes on the phylogeny
+assignAllelesToNodes <- function(nodes, alleles, isolates, verbose, clusterOfThreads=NULL) {
+
+  # Get an array of the postions of the alleles
+  positions <- getAllelePositions(alleles)
+
+  # Check whether a cluster of threads is available for the allele assignment
+  if (is.null(clusterOfThreads) == TRUE) {
+
+    # If not then run assignment on single thread
+    unassigned <- assignAllelesAtPositions(nodes, alleles, isolates, positions, verbose)
+
+    # If so, then run the assignment across the cluster of threads
+  } else {
+
+    # Make the functions, used during the assignment available to the threads
+    parallel::clusterExport(cl=clusterOfThreads,
+                            list("getAllelesAtPosition", "getIsolatesWithNsAtPosition", "areSetsOfIsolatesTheSame"))
+
+    # Run the allele assignment on multiple threads
+    unAssignedAllelesFromEachThread <- parallel::clusterApply(cl=clusterOfThreads,
+                                                              x=splitVectorIntoParts(positions, length(clusterOfThreads)),
+                                                              fun=assignAllelesAtPositions,
+                                                              nodes=nodes, alleles=alleles, isolates=isolates, verbose=FALSE)
+
+    # Collapse the list of the unassigned alleles found by each thread
+    unassigned <- unlist(unAssignedAllelesFromEachThread)
   }
 
   if(verbose){
@@ -545,43 +660,95 @@ getNodes <- function(tree){
   return(nodes)
 }
 
-#' Record each allele (Position:Nucleotide) found in the set of sequences
+#' Merge a list of named lists into one list, keeping keys and all elements of keys from all lists in l
 #'
-#' Function used by \code{homoplasyFinder()}
-#' @param sequences An object of class "alignment" containing FASTA formatted nucleotide sequences
-#' @param verbose Print detailed progress information. Defaults to TRUE
+#' @param allelesFromEachThread list of named lists
+#' @keywords internal
+#' @return Returns a merged list with all keys.
+# Example extended from user flodel on Stack Overflow https://stackoverflow.com/a/18539199
+mergeListsByName <- function(lists) {
+
+  # Get a vector of the unique alleles found across the threads
+  keys <- unique(unlist(lapply(lists, names)))
+
+  # Create a list containing the isolates found for each allele across the threads
+  merged <- setNames(do.call(mapply, c(FUN=c, lapply(lists, `[`, keys))), keys)
+
+  return(merged)
+}
+
+#' Record each allele (Position:Nucleotide) found in the subset of sequences
+#'
+#' Function used by \code{recordAllelesInPopulation()}
+#' @param sequences An object of class "data.frame" containing FASTA formatted nucleotide sequences
+#' @param verbose Print detailed progress information. Used only if run on a single thread. If run in parallel, it is ignored and set to FALSE.
 #' @keywords internal
 #' @return Returns an object of class "list" detailing the isolates associated with every allele present in the sequences
-recordAllelesInPopulation <- function(sequences, verbose){
+recordAllelesForSequences <- function(sequencesTable, verbose) {
 
   # Initialise a list to store the alleles found and the sequences they are found in
   alleles <- list()
 
-  # Examine each of the sequences
-  for(i in 1:length(sequences$nam)){
+  # Examine each of the sequences in the table
+  for(i in 1:nrow(sequencesTable)) {
 
     # Progress
     if(verbose){
-      cat(paste("\rReading alleles in sequence", i, "of", length(sequences$nam)))
+      cat(paste("\rReading alleles in sequence", i, "of", nrow(sequencesTable)))
     }
 
     # Split the current sequence into nucleotides
-    nucleotides <- strsplit(sequences$seq[i], split="")[[1]]
+    nucleotides <- strsplit(sequencesTable$seq[i], split="")[[1]]
 
     # Examine each nucleotide in the current sequence
-    for(pos in 1:length(nucleotides)){
+    for(pos in 1:length(nucleotides)) {
 
       # Build an allele ID
       id <- paste(pos, nucleotides[pos], sep=":")
 
       # Check if encountered this allele before
-      if(is.null(alleles[[id]]) == FALSE){
-
-        alleles[[id]] <- c(alleles[[id]], sequences$nam[i])
-      }else{
-        alleles[[id]] <- c(sequences$nam[i])
+      if(is.null(alleles[[id]])) {
+        alleles[[id]] <- c(sequencesTable$nam[i])
+      } else {
+        alleles[[id]] <- c(alleles[[id]], sequencesTable$nam[i])
       }
     }
+  }
+
+  return(alleles)
+}
+
+#' Record each allele (Position:Nucleotide) found in the set of sequences
+#'
+#' Function used by \code{homoplasyFinder()}
+#' @param sequences An object of class "alignment" containing FASTA formatted nucleotide sequences
+#' @param verbose Print detailed progress information.
+#' @param clusterOfThreads An object of class "cluster" to perform parallel computation. If NULL, the computation is performed on a single thread. Defaults to NULL
+#' @keywords internal
+#' @return Returns an object of class "list" detailing the isolates associated with every allele present in the sequences
+recordAllelesInPopulation <- function(sequences, verbose, clusterOfThreads=NULL){
+
+  # Convert the sequence alignment into a data frame
+  sequencesTable <- as.data.frame(sequences[c('seq', 'nam')], stringsAsFactors=FALSE)
+
+  # If no cluster of threads available then run search for alleles on single thread
+  if (is.null(clusterOfThreads) == TRUE) {
+    alleles <- recordAllelesForSequences(sequencesTable, verbose)
+
+    # If cluster of threads available, then run search for alleles across the threads available
+  }else{
+
+    # Split the sequence data frame into smaller subsets to be used on each thread
+    rows <- splitVectorIntoParts(1:nrow(sequencesTable), length(clusterOfThreads))
+    sequencesTable <- lapply(rows, function(x) sequencesTable[x,])
+
+    # On each thread, record the alleles present in the subset of the sequences
+    allelesFoundByEachThread <- parallel::clusterApply(cl = clusterOfThreads,
+                                                       x = sequencesTable,
+                                                       fun = recordAllelesForSequences, verbose=FALSE)
+
+    # Combine the alleles found by each thread into a single list
+    alleles <- mergeListsByName(allelesFoundByEachThread)
   }
 
   if(verbose){

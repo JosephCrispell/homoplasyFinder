@@ -4,12 +4,14 @@
 \alias{recordAllelesInPopulation}
 \title{Record each allele (Position:Nucleotide) found in the set of sequences}
 \usage{
-recordAllelesInPopulation(sequences, verbose)
+recordAllelesInPopulation(sequences, verbose, clusterOfThreads = NULL)
 }
 \arguments{
 \item{sequences}{An object of class "alignment" containing FASTA formatted nucleotide sequences}
 
-\item{verbose}{Print detailed progress information. Defaults to TRUE}
+\item{verbose}{Print detailed progress information.}
+
+\item{clusterOfThreads}{An object of class "cluster" to perform parallel computation. If NULL, the computation is performed on a single thread. Defaults to NULL}
 }
 \value{
 Returns an object of class "list" detailing the isolates associated with every allele present in the sequences
