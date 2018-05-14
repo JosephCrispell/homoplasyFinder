@@ -536,9 +536,9 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose, clusterOfThr
 
     # Make the functions, used during the assignment available to the threads
     parallel::clusterExport(cl=clusterOfThreads,
-                            list(homplasyFinder::getAllelesAtPosition,
-                                 homplasyFinder::getIsolatesWithNsAtPosition,
-                                 homplasyFinder::areSetsOfIsolatesTheSame))
+                            list(homoplasyFinder::getAllelesAtPosition,
+                                 homoplasyFinder::getIsolatesWithNsAtPosition,
+                                 homoplasyFinder::areSetsOfIsolatesTheSame))
 
     # Run the allele assignment on multiple threads
     unAssignedAllelesFromEachThread <- parallel::clusterApply(cl=clusterOfThreads,
