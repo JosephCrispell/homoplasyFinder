@@ -29,6 +29,11 @@
 # remove @export and include @keywords internal for internal functions
 # save single objects into RData files of the same name into data/ folder
 
+## Multithreading
+# added @export in for functions that are used during multithreading, these functions need to be available in the environment for this line
+#       parallel::clusterExport(cl=clusterOfThreads, list("getAllelesAtPosition", "getIsolatesWithNsAtPosition", "areSetsOfIsolatesTheSame"))
+#       which is necessary when multithreading is being conducted on a mac
+
 #' An object of class "DNAbin" containing nucleotide sequence alignment
 #'
 #' @name tree
