@@ -13,6 +13,8 @@ assignAllelesAtPositions(nodes, alleles, isolates, positions, verbose)
 
 \item{isolates}{An object of class "vector" containing "character" strings identifying isolates}
 
+\item{positions}{A vector of characters representing positions in a sequence alignment to be evaluated}
+
 \item{verbose}{Print detailed progress information. Used only if run on a single thread. If run in parallel, it is ignored and set to FALSE.}
 }
 \value{

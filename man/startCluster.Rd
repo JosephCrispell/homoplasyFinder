@@ -7,7 +7,7 @@
 startCluster(nThreads)
 }
 \arguments{
-\item{nThreads}{The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine}
+\item{nThreads}{The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine. If negative then that absolute number of threads will be left free}
 }
 \value{
 Returns an object of class "cluster" to start parallel computation or NULL if computation will be performed on one thread

@@ -251,7 +251,7 @@ checkForSpaces <- function(filePath){
 #' Register cluster to start parallel computation
 #'
 #' Function used by \code{homoplasyFinder()}
-#' @param nThreads The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine
+#' @param nThreads The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine. If negative then that absolute number of threads will be left free
 #' @keywords internal
 #' @return Returns an object of class "cluster" to start parallel computation or NULL if computation will be performed on one thread
 startCluster <- function(nThreads) {
@@ -264,9 +264,9 @@ startCluster <- function(nThreads) {
     nThreads <- nThreadsAvailable
   }
 
-  # Check that at least one thread was requested
-  if(nThreads < 1){
-    nThreads <- 1
+  # Check that at least one thread was requested and if some threads are to be left free
+  if(nThreads <= 0){
+    nThreads <- nThreadsAvailable + nThreads
   }
 
   # If only one thread requested then set clusterOfThreads to NULL
@@ -274,8 +274,8 @@ startCluster <- function(nThreads) {
 
     clusterOfThreads <- NULL
 
-    # If multiple threads requested - initialise a cluster to contain them
-  } else {
+  # If multiple threads requested - initialise a cluster to contain them
+  }else{
 
     # Initialise the cluster of threads
     clusterOfThreads <- parallel::makeCluster(nThreads)
@@ -293,7 +293,7 @@ startCluster <- function(nThreads) {
 #' @param tree An object of class "phylo"
 #' @param sequencesDNABin An object containing FASTA formatted nucleotide sequences of class "DNAbin"
 #' @param verbose Print detailed progress information. Defaults to TRUE
-#' @param nThreads The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine
+#' @param nThreads The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine. If negative then that absolute number of threads will be left free
 #' @keywords HomoplasyFinder tool R
 #' @export
 #' @examples
@@ -407,7 +407,7 @@ getPositions <- function(alleles){
 #' @param nodes An object of class "list" recording the tips (isolates) associated with each node in a phylogeny - produced by \code{getNodes()}
 #' @param alleles An object of class "list" recording the isolates associated with each allele produced by \code{recordAllelesInPopulation()}
 #' @param isolates An object of class "vector" containing "character" strings identifying isolates
-#' @param positions
+#' @param positions A vector of characters representing positions in a sequence alignment to be evaluated
 #' @param verbose Print detailed progress information. Used only if run on a single thread. If run in parallel, it is ignored and set to FALSE.
 #' @keywords internal
 #' @return Returns an object of class "vector" with the IDs of alleles (Position:Nucleotide) not assigned to nodes on the phylogeny
@@ -497,7 +497,7 @@ splitVectorIntoParts <- function(vector, nParts){
   parts <- list()
 
   # Get each part
-  for(i in 1:nParts){
+  for(i in seq_len(nParts)){
 
     # Calculate the start and end of the current part
     start <- ((i-1)*nValuesPerPart) + 1
@@ -531,13 +531,13 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose, clusterOfThr
   positions <- getAllelePositions(alleles)
 
   # Check whether a cluster of threads is available for the allele assignment
-  if (is.null(clusterOfThreads) == TRUE) {
+  if(is.null(clusterOfThreads) == TRUE){
 
     # If not then run assignment on single thread
     unassigned <- assignAllelesAtPositions(nodes, alleles, isolates, positions, verbose)
 
-    # If so, then run the assignment across the cluster of threads
-  } else {
+  # If so, then run the assignment across the cluster of threads
+  }else{
 
     # Make the functions, used during the assignment available to the threads
     parallel::clusterExport(cl=clusterOfThreads,
@@ -698,7 +698,7 @@ recordAllelesForSequences <- function(sequencesTable, verbose) {
   alleles <- list()
 
   # Examine each of the sequences in the table
-  for(i in 1:nrow(sequencesTable)) {
+  for(i in seq_len(nrow(sequencesTable))){
 
     # Progress
     if(verbose){
@@ -709,7 +709,7 @@ recordAllelesForSequences <- function(sequencesTable, verbose) {
     nucleotides <- strsplit(sequencesTable$seq[i], split="")[[1]]
 
     # Examine each nucleotide in the current sequence
-    for(pos in 1:length(nucleotides)) {
+    for(pos in seq_along(nucleotides)){
 
       # Build an allele ID
       id <- paste(pos, nucleotides[pos], sep=":")
@@ -740,10 +740,10 @@ recordAllelesInPopulation <- function(sequences, verbose, clusterOfThreads=NULL)
   sequencesTable <- as.data.frame(sequences[c('seq', 'nam')], stringsAsFactors=FALSE)
 
   # If no cluster of threads available then run search for alleles on single thread
-  if (is.null(clusterOfThreads) == TRUE) {
+  if(is.null(clusterOfThreads) == TRUE){
     alleles <- recordAllelesForSequences(sequencesTable, verbose)
 
-    # If cluster of threads available, then run search for alleles across the threads available
+  # If cluster of threads available, then run search for alleles across the threads available
   }else{
 
     # Split the sequence data frame into smaller subsets to be used on each thread
@@ -751,9 +751,9 @@ recordAllelesInPopulation <- function(sequences, verbose, clusterOfThreads=NULL)
     sequencesTable <- lapply(rows, function(x) sequencesTable[x,])
 
     # On each thread, record the alleles present in the subset of the sequences
-    allelesFoundByEachThread <- parallel::clusterApply(cl = clusterOfThreads,
-                                                       x = sequencesTable,
-                                                       fun = recordAllelesForSequences, verbose=FALSE)
+    allelesFoundByEachThread <- parallel::clusterApply(cl=clusterOfThreads,
+                                                       x=sequencesTable,
+                                                       fun=recordAllelesForSequences, verbose=FALSE)
 
     # Combine the alleles found by each thread into a single list
     alleles <- mergeListsByName(allelesFoundByEachThread)

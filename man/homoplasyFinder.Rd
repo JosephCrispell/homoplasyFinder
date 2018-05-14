@@ -14,7 +14,7 @@ homoplasyFinder(tree, sequencesDNABin, verbose = TRUE,
 
 \item{verbose}{Print detailed progress information. Defaults to TRUE}
 
-\item{nThreads}{The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine}
+\item{nThreads}{The number of parallel processes to use to perform the computation. Defaults to all available cores on the machine. If negative then that absolute number of threads will be left free}
 }
 \value{
 Returns a data.frame detailing the Positions, Alleles and Isolates associated with homoplasies identified
