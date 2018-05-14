@@ -536,9 +536,7 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose, clusterOfThr
 
     # Make the functions, used during the assignment available to the threads
     parallel::clusterExport(cl=clusterOfThreads,
-                            list(homoplasyFinder::getAllelesAtPosition,
-                                 homoplasyFinder::getIsolatesWithNsAtPosition,
-                                 homoplasyFinder::areSetsOfIsolatesTheSame))
+                            list("getAllelesAtPosition", "getIsolatesWithNsAtPosition", "areSetsOfIsolatesTheSame"))
 
     # Run the allele assignment on multiple threads
     unAssignedAllelesFromEachThread <- parallel::clusterApply(cl=clusterOfThreads,
@@ -563,6 +561,7 @@ assignAllelesToNodes <- function(nodes, alleles, isolates, verbose, clusterOfThr
 #' @param position A character string detailing the position of interest
 #' @param alleles An object of class "list" recording the isolates associated with each allele produced by \code{recordAllelesInPopulation()}
 #' @keywords internal
+#' @export
 #' @return Returns a vector of unassigned alleles found at the position provided
 getAllelesAtPosition <- function(position, alleles){
 
@@ -613,6 +612,7 @@ getAllelePositions <- function(alleles){
 #' @param position A character string detailing the position of interest
 #' @param alleles An object of class "list" recording the isolates associated with each allele produced by \code{recordAllelesInPopulation()}
 #' @keywords internal
+#' @export
 #' @return Returns a vector of the names of isolates that have an N at the position associated with the allele
 getIsolatesWithNsAtPosition <- function(position, alleles){
 
@@ -634,6 +634,7 @@ getIsolatesWithNsAtPosition <- function(position, alleles){
 #' @param a An object of class "vector" containing character strings recognising isolates
 #' @param b An object of class "vector" containing character strings recognising isolates
 #' @keywords internal
+#' @export
 #' @return Returns either TRUE or FALSE depending on whether the input vectors are identical or not
 areSetsOfIsolatesTheSame <- function(a, b){
   result <- FALSE
