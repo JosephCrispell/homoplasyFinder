@@ -70,6 +70,9 @@ NULL
 #' plotTreeAndHomoplasySites(tree, results)
 plotTreeAndHomoplasySites <- function(tree, results, scale=TRUE){
 
+  # Get the current plotting margins - so that we can revert to these once finished
+  marginSettings <- par()$mar
+  
   # Set the plotting margins
   par(mar=c(0,0,1,0.5))
 
@@ -101,7 +104,7 @@ plotTreeAndHomoplasySites <- function(tree, results, scale=TRUE){
   nucleotideColours <- list("A"="red", "C"="blue", "G"="cyan", "T"="orange")
 
   # Plot FASTA alignment beside tree
-  for(homoplasyIndex in 1:nrow(results)){
+  for(homoplasyIndex in seq_len(nrow(results))){
 
     # Get an array of the nucleotides associated with the current position
     nucleotides = strsplit(results[homoplasyIndex, "Alleles"], split=",")[[1]]
@@ -110,7 +113,7 @@ plotTreeAndHomoplasySites <- function(tree, results, scale=TRUE){
     concatenatedIsolates = strsplit(results[homoplasyIndex, "IsolatesForAlleles"], split=",")[[1]]
 
     # Examine each nucleotides
-    for(nucleotideIndex in 1:length(nucleotides)){
+    for(nucleotideIndex in seq_along(nucleotides)){
 
       # Examine each isolate with the current nucleotide
       for(id in strsplit(concatenatedIsolates[nucleotideIndex], split=":")[[1]]){
@@ -131,7 +134,7 @@ plotTreeAndHomoplasySites <- function(tree, results, scale=TRUE){
   }
 
   # Add separator lines
-  for(homoplasyIndex in 1:nrow(results)){
+  for(homoplasyIndex in seq_len(nrow(results))){
     points(x=c(maxCoords[1] + ((homoplasyIndex-1) * charWidth),
                maxCoords[1] + ((homoplasyIndex-1) * charWidth)),
            y=c(axisLimits[3], axisLimits[4]),
@@ -139,14 +142,14 @@ plotTreeAndHomoplasySites <- function(tree, results, scale=TRUE){
   }
 
   # Note the positions of each homoplasy
-  for(row in 1:nrow(results)){
+  for(row in seq_len(nrow(results))){
     text(x=maxCoords[1] + ((row-1) * charWidth) + (0.5 * charWidth),
          y=maxCoords[2] + 0.02*yLength,
          labels=results[row, "Position"], cex=0.5, srt=90, xpd=TRUE)
   }
 
-  # Reset plotting margins
-  par(mar=c(5.1, 4.1, 4.1, 2.1))
+  # Revert the previous margin settings
+  par(marginOptions)
 }
 
 #' Get the maximum X and Y coordinates used on current plot.phylo plot
@@ -182,7 +185,7 @@ maxCoordinates <- function(tipCoordinates){
 getTipCoordinates <- function(tipLabels){
   lastPP <- get("last_plot.phylo", envir = ape::.PlotPhyloEnv)
   tips <- list()
-  for(i in 1:length(tipLabels)){
+  for(i in seq_along(tipLabels)){
     tips[[as.character(tipLabels[i])]] <- c(lastPP$xx[i], lastPP$yy[i])
   }
 
@@ -357,7 +360,7 @@ reportHomoplasiesIdentified <- function(notAssigned, alleles){
   output <- data.frame("Position"=names(positions), "Alleles"=NA, "IsolatesForAlleles"=NA, stringsAsFactors=FALSE)
 
   # Report each homoplasy
-  for(row in 1:length(positions)){
+  for(row in seq_along(positions)){
 
     # Store the position
     output[row, "Position"] <- names(positions)[row]
@@ -439,7 +442,7 @@ assignAllelesAtPositions <- function(nodes, alleles, isolates, positions, verbos
       allAssigned <- FALSE
 
       # Examine each node
-      for(i in 1:length(nodes)) {
+      for(i in seq_along(nodes)) {
 
         # Check if all alleles have been assigned
         if(length(which(assigned == TRUE)) == length(allelesAtPosition)) {
@@ -458,7 +461,7 @@ assignAllelesAtPositions <- function(nodes, alleles, isolates, positions, verbos
         isolatesAboveWithoutNs <- isolatesAbove[isolatesAbove %in% isolatesWithN == FALSE]
 
         # Examine each allele
-        for(alleleIndex in 1:length(allelesAtPosition)) {
+        for(alleleIndex in seq_along(allelesAtPosition)) {
 
           # Get the isolates with the current allele
           isolatesWithAllele <- alleles[[allelesAtPosition[alleleIndex]]]
@@ -661,7 +664,7 @@ getNodes <- function(tree){
   # Nodes number 1:nTips and then onwards: two methods to calculate total number:
   # - Number of edges + 1
   # - Number of tips plus number internal nodes: length(tree$tip.label) + tree$Nnode
-  for(node in 1:(length(tree$tip.label) + tree$Nnode)){
+  for(node in seq_len(length(tree$tip.label) + tree$Nnode)){
     nodes[[as.character(node)]] <- geiger::tips(tree, node)
   }
 
@@ -747,7 +750,7 @@ recordAllelesInPopulation <- function(sequences, verbose, clusterOfThreads=NULL)
   }else{
 
     # Split the sequence data frame into smaller subsets to be used on each thread
-    rows <- splitVectorIntoParts(1:nrow(sequencesTable), length(clusterOfThreads))
+    rows <- splitVectorIntoParts(seq_len(nrow(sequencesTable)), length(clusterOfThreads))
     sequencesTable <- lapply(rows, function(x) sequencesTable[x,])
 
     # On each thread, record the alleles present in the subset of the sequences
