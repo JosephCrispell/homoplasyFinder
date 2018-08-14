@@ -7,12 +7,12 @@
 getTipCoordinates(tipLabels)
 }
 \arguments{
-\item{tipLabels}{An object of class "vector" containing the tip labels associated with a phylogenetic tree (\code{tree$tip.label})}
+\item{tipLabels}{An object of class "vector" containing the labels assigned to each tip in the plotted tree. Get using (\code{tree$tip.label})}
 }
 \value{
 Returns an object of class "list" containing the X and Y coordinates of each tip in the currently plotted phylogenetic tree
 }
 \description{
-Function used by \code{plotTreeAndHomoplasySites()}
+Function used by \code{plotAnnotatedTree()}
 }
 \keyword{internal}

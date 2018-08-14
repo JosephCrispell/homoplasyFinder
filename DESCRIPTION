@@ -1,12 +1,13 @@
 Package: homoplasyFinder
 Title: Tools to identify and plot homoplasies on a phylogenetic tree
 Version: 0.0.0.9000
-Authors@R: 	person("Joseph", "Crispell", email = "crispelljoseph@gmail.com", role = "cre")
+Authors@R: person("Joseph", "Crispell", email = "crispelljoseph@gmail.com", role = "cre")
 			person("Daniel", "Balaz", email = "Daniel.Balaz@ed.ac.uk", role = "cre")
 Description: What the package does (one paragraph).
-Depends: R (>= 3.3.3)
-Imports: ape, geiger, doParallel, parallel
+Depends: R (>= 3.3.3), rJava (>= 0.9-6)
+SystemRequirements: Java (>= 1.5)
+Imports: ape, rJava
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.0.9000
