@@ -12,27 +12,19 @@ install_github("JosephCrispell/homoplasyFinder")
 library(homoplasyFinder)
 ```
 
-Once installed HomoplasyFinder can either be run using only R:
+Once installed HomoplasyFinder (a Java tool) can either be run using:
 ```
-# Load the data
-data("tree")
-data("sequences")
+path <- "[pathToDirectoryForOutputFilesHere]"
+treeFile <- "[pathToNewickTreeFileHere]"
+fastaFile <- "[pathToFASTANucleotideAlignmentFileHere]"
 
-# Run HomoplasyFinder
-results <- homoplasyFinder(tree, sequences)
+# Identify the positions
+inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, path)
 
-# Plot the results
-plotTreeAndHomoplasySites(tree, results)
+# Get the annotated phylogeny
+tree <- readAnnotatedTree(path)
+
+# Plot the annotated phylogeny
+plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 ```
-OR the Java version of the tool can be run from within R (THIS IS MUCH FASTER BUT YOU'll NEED [JAVA](https://java.com/en/download/)):
-```
-# Run HomoplasyFinder
-results <- runHomoplasyFinderJavaTool("pathToJarFile", "pathToFastaFile", "pathToTreeFile")
-
-# Load the ape library - for reading tree file
-library(ape)
-
-# Plot the results
-plotTreeAndHomoplasySites(read.tree("pathToTreeFile"), results)
-```
-The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_v1.jar) and [without](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_26-04-18.jar) a graphical user interface.
+The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_GUI.jar) and [without](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder.jar) a graphical user interface.
