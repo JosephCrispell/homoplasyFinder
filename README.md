@@ -27,4 +27,4 @@ tree <- readAnnotatedTree(path)
 # Plot the annotated phylogeny
 plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 ```
-The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder_GUI.jar) and [without](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder.jar) a graphical user interface.
+The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder-GUI.jar) and [without](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder.jar) a graphical user interface.
