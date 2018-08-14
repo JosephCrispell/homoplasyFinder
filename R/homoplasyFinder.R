@@ -86,6 +86,10 @@
 #       which is necessary when multithreading is being conducted on a mac
 
 ## Usage example
+# library(homoplasyFinder)
+# path <- "/home/josephcrispell/Desktop/Research/Homoplasy/"
+# treeFile <- paste0(path, "example-AFTER_10-08-18.tree")
+# fastaFile <- paste0(path, "example_10-08-18.fasta")
 # inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, path, verbose=TRUE)
 # tree <- readAnnotatedTree(path)
 # plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
@@ -140,7 +144,7 @@ readAnnotatedTree <- function(path, date=format(Sys.Date(), "%d-%m-%y")){
 
 #' Plotting HomoplasyFinder results
 #'
-#' This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder
+#' This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder. Alignment colours: A=red, C=blue, G=cyan, and T=orange
 #' @param tree An object of class "phylo" produced by \code{readAnnotatedTree()}
 #' @param inconsistentPositions An integer array of the inconsistent positions identified by HomoplasyFinder. Produced by \code{runHomoplasyFinderInJava()}
 #' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
