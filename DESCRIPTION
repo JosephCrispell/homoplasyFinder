@@ -4,8 +4,8 @@ Version: 0.0.0.9000
 Authors@R: person("Joseph", "Crispell", email = "crispelljoseph@gmail.com", role = "cre")
 			person("Daniel", "Balaz", email = "Daniel.Balaz@ed.ac.uk", role = "cre")
 Description: What the package does (one paragraph).
-Depends: R (>= 3.3.3), rJava (>= 0.9-6)
-SystemRequirements: Java (>= 1.5)
+Depends: R (>= 3.3.3), rJava (>= 0.9-10)
+SystemRequirements: Java (>= 10.0.1)
 Imports: ape, rJava
 License: GPL-3
 Encoding: UTF-8
