@@ -17,7 +17,7 @@ plotAnnotatedTree(tree, inconsistentPositions, fastaFile,
 \item{scale}{A boolean value to determine whether a scale is added to plot. Defaults to TRUE}
 }
 \description{
-This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder
+This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder. Alignment colours: A=red, C=blue, G=cyan, and T=orange
 }
 \keyword{annotated}
 \keyword{plot}

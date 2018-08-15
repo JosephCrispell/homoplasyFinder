@@ -113,21 +113,18 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
                                      verbose=TRUE){
 
   # Add the java class path (path to the jar file in R package)
-  .jaddClassPath('inst/java/HomoplasyFinder.jar')
+  rJava::.jaddClassPath('inst/java/HomoplasyFinder.jar')
   
   # Initialise the Java class - include package in path to class
-  javaHomoplasyFinderClass <- .jnew("homoplasyFinder/HomoplasyFinder")
+  rJava::javaHomoplasyFinderClass <- .jnew("homoplasyFinder/HomoplasyFinder")
   
   # Run HomoplasyFinder
-  result <- .jcall(javaHomoplasyFinderClass, # Loaded Java class
-                   method="runHomoplasyFinderFromR", # Method in Java class to be called
-                   returnSig="[I", # The return type for the method
-                   # Method arguments follow
-                   treeFile, fastaFile, path, createFasta, createReport, createAnnotatedNewickTree,
-                   verbose)
-  
-  # Read in the annotated newick tree file produced
-  #return(ape::read.tree(paste0(path, "annotatedNewickTree_", date, ".tree")))
+  result <- rJava::.jcall(javaHomoplasyFinderClass, # Loaded Java class
+                          method="runHomoplasyFinderFromR", # Method in Java class to be called
+                          returnSig="[I", # The return type for the method
+                          # Method arguments follow
+                          treeFile, fastaFile, path, createFasta, createReport, createAnnotatedNewickTree,
+                          verbose)
   return(result)
 }
 
