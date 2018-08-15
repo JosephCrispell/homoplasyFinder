@@ -116,7 +116,7 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
   rJava::.jaddClassPath('inst/java/HomoplasyFinder.jar')
   
   # Initialise the Java class - include package in path to class
-  rJava::javaHomoplasyFinderClass <- .jnew("homoplasyFinder/HomoplasyFinder")
+  javaHomoplasyFinderClass <- rJava::.jnew("homoplasyFinder/HomoplasyFinder")
   
   # Run HomoplasyFinder
   result <- rJava::.jcall(javaHomoplasyFinderClass, # Loaded Java class
