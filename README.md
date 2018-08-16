@@ -27,7 +27,8 @@ tree <- readAnnotatedTree(path)
 # Plot the annotated phylogeny
 plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 ```
-The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder-GUI.jar) and [without](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder.jar) a graphical user interface.
+## Java executables
+HomoplasyFinder can be run within R, using this homoplasyFinder package, or it can be ran directly as a Java application. The java tool is currently available for download [with](https://github.com/JosephCrispell/Java/raw/master/ExecutableJarFiles/HomoplasyFinder-GUI.jar) and [without](https://github.com/JosephCrispell/homoplasyFinder/raw/master/inst/java/HomoplasyFinder.jar) a graphical user interface. Note HomoplasyFinder.jar (without GUI) is present within the homoplasyFinder R package. If you manage to get the homoplasyFinder() R package installed but you can't get rJava to work then you can run this tool directly. Just search for "HomoplasyFinder.ja" on your computer. Once you've run HomoplasyFinder.jar then you can use the functions available within the R package homoplasyFinder() to visualise the results.
 
 ## IMPORTANT - rJava is quite a temperamental R package. If you have problems getting my package to work try:
 1) Updating your Java jdk to >10.0.1 (http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html)
