@@ -51,3 +51,17 @@ Some useful help information:
 - https://www.r-statistics.com/2012/08/how-to-load-the-rjava-package-after-the-error-java_home-cannot-be-determined-from-the-registry/
 - http://spartanideas.msu.edu/2015/06/27/the-rjava-nightmare/
 - https://stackoverflow.com/questions/30738974/rjava-load-error-in-rstudio-r-after-upgrading-to-osx-yosemite/31039105#31039105
+
+## Java heap space error
+If you running HomoplasyFinder on a really large dataset and you run into a heapscape error like this:
+```
+java.lang.OutOfMemoryError: Java heap space
+```
+You'll need to change the maximum heap size limit using the `-Xmx` argument. In the command line use:
+```
+java -Xmx4000m -jar HomoplasyFinder.jar
+```
+to change it to 4GB. If you're in R, you'll need to restart your session and add the following at the top of your script before loading any packages:
+```
+options(java.parameters = "-Xmx4000m")
+```
