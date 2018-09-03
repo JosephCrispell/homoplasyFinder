@@ -145,10 +145,13 @@ readAnnotatedTree <- function(path, date=format(Sys.Date(), "%d-%m-%y")){
 #' @param tree An object of class "phylo" produced by \code{readAnnotatedTree()}
 #' @param inconsistentPositions An integer array of the inconsistent positions identified by HomoplasyFinder. Produced by \code{runHomoplasyFinderInJava()}
 #' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
-#' @param scale A boolean value to determine whether a scale is added to plot. Defaults to TRUE
+#' @param addScale A boolean value to determine whether a scale is added to plot. Defaults to TRUE
+#' @param alignmentCex A multiplier value to change the size of the space alotted to plotting the homoplasy alignment. Defaults to 1
+#' @param addNodeLabels A multiplier value to change the size node labels. Defaults to 1
 #' @keywords plot tree annotated
 #' @export
-plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=TRUE){
+plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=TRUE, alignmentCex=1, addNodeLabels=TRUE,
+                              nodeLabelCex=1, alignmentPositionCex=0.5){
   
   # Get the current plotting margins - so that we can revert to these once finished
   marginSettings <- par("mar")
@@ -159,16 +162,20 @@ plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=T
   # Plot the phylogeny
   # Note plotting invisible tip labels - these provide space for plotting alignment
   ape::plot.phylo(tree, show.tip.label=TRUE, type="phylogram", align.tip.label=TRUE, 
-                  tip.color=rgb(0,0,0,0), main="Homoplasies Identified", cex=3)
+                  tip.color=rgb(0,0,0,0), main="Homoplasies Identified", cex=1*alignmentCex)
   
   # Add a scale bar if requested
-  addScaleBar(addScale)
+  if(addScale){
+    addScaleBar()
+  }
   
   # Add internal node labels indicating the inconsistent positions associated with each internal node
-  addInternalNodeLabels(tree)
+  if(addNodeLabels){
+    addInternalNodeLabels(tree, cex=nodeLabelCex)
+  }
 
   # Add an alignment detailing the nucleotides for each inconsistent position
-  addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions)
+  addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions, alignmentPositionCex)
   
   # Revert the previous margin settings
   par("mar"= marginSettings)
@@ -215,8 +222,9 @@ getInternalNodeCoordinates <- function(nTips){
 #'
 #' Function used by \code{plotAnnotatedTree()}
 #' @param tree An object of class "phylo" produced by \code{readAnnotatedTree()}
+#' @param cex A multiplier value to change the size of the node labels
 #' @keywords internal
-addInternalNodeLabels <- function(tree){
+addInternalNodeLabels <- function(tree, cex){
   
   # Get the coordinates of the internal nodes
   internalNodeCoords <- getInternalNodeCoordinates(length(tree$tip.label))
@@ -236,8 +244,8 @@ addInternalNodeLabels <- function(tree){
     positions <- paste(strsplit(tree$node.label[i], split="-")[[1]], collapse=",")
     
     # Calculate the height and width of the label
-    labelHeight <- strheight(positions)
-    labelWidth <- strwidth(positions)
+    labelHeight <- strheight(positions, cex=cex)
+    labelWidth <- strwidth(positions, cex=cex)
     
     # Add a background polygon
     polygon(x=c(coords[1] - (labelWidth * 0.52),
@@ -252,7 +260,7 @@ addInternalNodeLabels <- function(tree){
             border=NA)
     
     # Add each position at the current node
-    text(x=coords[1], y=coords[2], labels=positions[1], col=rgb(1,1,1))
+    text(x=coords[1], y=coords[2], labels=positions[1], col=rgb(1,1,1), cex=cex)
   }
 }
 
@@ -303,22 +311,19 @@ getMaxCoordinates <- function(tipCoordinates){
 #' Adds a scale bar to plotted phylogenetic tree if requested
 #'
 #' Function used by \code{plotAnnotatedTree()}
-#' @param addScale A flag to check whether scale wanted
 #' @keywords internal
-addScaleBar <- function(addScale){
+addScaleBar <- function(){
   
   # Get the axis Limits
   axisLimits <- par("usr")
   
   # Add Scale bar
-  if(addScale == TRUE){
-    xLength <- axisLimits[2] - axisLimits[1]
-    yLength <- axisLimits[4] - axisLimits[3]
-    points(x=c(axisLimits[1] + 0.05*xLength, axisLimits[1] + 0.15*xLength),
-           y=c(axisLimits[3]+0.05*yLength, axisLimits[3]+0.05*yLength), type="l", lwd=3)
-    text(x=axisLimits[1] + 0.1*xLength, y=axisLimits[3] +0.07*yLength,
-         labels=round(0.1*xLength, digits=1), cex=1, xpd=TRUE)
-  }
+  xLength <- axisLimits[2] - axisLimits[1]
+  yLength <- axisLimits[4] - axisLimits[3]
+  points(x=c(axisLimits[1] + 0.05*xLength, axisLimits[1] + 0.15*xLength),
+         y=c(axisLimits[3]+0.05*yLength, axisLimits[3]+0.05*yLength), type="l", lwd=3)
+  text(x=axisLimits[1] + 0.1*xLength, y=axisLimits[3] +0.07*yLength,
+       labels=round(0.1*xLength, digits=1), cex=1, xpd=TRUE)
 }
 
 #' Adds nucleotide alignment to right of plotted phylogenetic tree - nucleotides for inconsistent positions
@@ -327,8 +332,9 @@ addScaleBar <- function(addScale){
 #' @param tree An object of class "phylo" produced by \code{readAnnotatedTree()}
 #' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
 #' @param inconsistentPositions An integer array of the inconsistent positions identified by HomoplasyFinder. Produced by \code{runHomoplasyFinderInJava()}
+#' @param cex A multiplier value to change the size of position labels
 #' @keywords internal
-addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositions){
+addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositions, cex){
   
   # Get the axis Limits
   axisLimits <- par("usr")
@@ -381,9 +387,9 @@ addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositi
   # Note the positions of each homoplasy
   for(positionIndex in seq_along(inconsistentPositions)){
     text(x=maxCoords[1] + ((positionIndex-1) * charWidth) + (0.5 * charWidth),
-         y=maxCoords[2] + (0.025 * (axisLimits[4] - axisLimits[3])),
+         y=maxCoords[2],
          labels=inconsistentPositions[positionIndex],
-         cex=0.5, srt=90, xpd=TRUE)
+         cex=cex, srt=90, xpd=TRUE, pos=3)
   }
 }
 

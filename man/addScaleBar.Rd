@@ -4,10 +4,7 @@
 \alias{addScaleBar}
 \title{Adds a scale bar to plotted phylogenetic tree if requested}
 \usage{
-addScaleBar(addScale)
-}
-\arguments{
-\item{addScale}{A flag to check whether scale wanted}
+addScaleBar()
 }
 \description{
 Function used by \code{plotAnnotatedTree()}

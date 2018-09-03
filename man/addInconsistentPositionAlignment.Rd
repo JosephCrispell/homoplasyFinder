@@ -4,7 +4,8 @@
 \alias{addInconsistentPositionAlignment}
 \title{Adds nucleotide alignment to right of plotted phylogenetic tree - nucleotides for inconsistent positions}
 \usage{
-addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions)
+addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions,
+  cex)
 }
 \arguments{
 \item{tree}{An object of class "phylo" produced by \code{readAnnotatedTree()}}
@@ -12,6 +13,8 @@ addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions)
 \item{fastaFile}{The full path to the FASTA formatted nucleotide sequence alignment}
 
 \item{inconsistentPositions}{An integer array of the inconsistent positions identified by HomoplasyFinder. Produced by \code{runHomoplasyFinderInJava()}}
+
+\item{cex}{A multiplier value to change the size of position labels}
 }
 \description{
 Function used by \code{plotAnnotatedTree()}

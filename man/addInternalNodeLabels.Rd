@@ -4,10 +4,12 @@
 \alias{addInternalNodeLabels}
 \title{Adds labels to plotted tree indicating the internal nodes associated with each inconsistent position}
 \usage{
-addInternalNodeLabels(tree)
+addInternalNodeLabels(tree, cex)
 }
 \arguments{
 \item{tree}{An object of class "phylo" produced by \code{readAnnotatedTree()}}
+
+\item{cex}{A multiplier value to change the size of the node labels}
 }
 \description{
 Function used by \code{plotAnnotatedTree()}
