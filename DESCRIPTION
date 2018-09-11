@@ -3,7 +3,7 @@ Title: Tools to identify and plot homoplasies on a phylogenetic tree
 Version: 0.0.0.9000
 Authors@R: person("Joseph", "Crispell", email = "crispelljoseph@gmail.com", role = "cre")
 			person("Daniel", "Balaz", email = "Daniel.Balaz@ed.ac.uk", role = "cre")
-Description: What the package does (one paragraph).
+Description: A set of functions to use HomoplasyFinder to identify homoplasies on a phylogenetic tree. Provides a function to plot the annotated phylogeny that HomoplasyFinder produces.
 Depends: R (>= 3.3.3), rJava (>= 0.9-10)
 SystemRequirements: Java (>= 10.0.1)
 Imports: ape, rJava
