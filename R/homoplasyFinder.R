@@ -181,7 +181,7 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
 #' workingDirectory <- getwd()
 #' 
 #' # Run the HomoplasyFinder java code
-#' inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, path)
+#' inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
 #' 
 #' # Get the current date
 #' date <- format(Sys.Date(), "%d-%m-%y")
