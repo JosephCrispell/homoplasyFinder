@@ -94,6 +94,71 @@
 # tree <- readAnnotatedTree(path)
 # plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 
+#' Run HomoplasyFinder using Java jar file. Use if you can't get rJava to install properly :-)
+#'
+#' This function runs HomoplasyFinder as a command line jar tool to identify positions that are potentially homoplasious. Output(s) will appear in current working directory.
+#' @param treeFile The full path to the Newick formatted phylogenetic tree file
+#' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
+#' @param createFasta Flag to tell HomoplasyFinder whether to create FASTA file without any inconsistent positions. Defaults to TRUE
+#' @param createAnnotatedNewickTree Flag to tell HomoplasyFinder whether to create annotated Newick formatted phylogenetic tree file. Defaults to TRUE
+#' @param includeConsistentSitesInReport Flag to tell HomoplasyFinder whether to include information about the consistent sites in the report. Defaults to TRUE
+#' @param verbose Flag to parse to HomoplasyFinder to request detailed information. Defaults to true
+#' @keywords homoplasyFinder java
+#' @export
+#' @examples
+#' # Find the FASTA and tree files attached to package
+#' fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
+#' treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
+#' 
+#' # Run the HomoplasyFinder jar tool
+#' runHomosyFinderJarTool(treeFile, fastaFile)
+#' 
+#' # Get the current date
+#' date <- format(Sys.Date(), "%d-%m-%y")
+#' 
+#' # Get the current working directory
+#' workingDirectory <- getwd()
+#' 
+#' # Read in the output table
+#' resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt)
+#' results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
+#' 
+#' # Note the inconsistent positions
+#' inconsistentPositions <- results[results$ConsistencyIndex < 1, "Position"]
+#' 
+#' # Read in the annotated tree
+#' tree <- readAnnotatedTree(workingDirectory)
+#' 
+#' # Plot the annotated tree
+#' plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
+runHomoplasyFinderJarTool <- function(treeFile, fastaFile,  
+                                      createFasta=TRUE,
+                                      createAnnotatedNewickTree=TRUE,
+                                      includeConsistentSitesInReport=FALSE,
+                                      verbose=TRUE){
+  
+  # Note the location of the HomoplasyFinder jar file
+  homoplasyFinderJar <- system.file("java", "HomoplasyFinder.jar", package = "homoplasyFinder")
+  
+  # Build the command to be used
+  command <- paste0("java -jar ", homoplasyFinderJar, " --fasta ", fastaFile, " --tree ", treeFile)
+  if(verbose){
+    command <- paste0(command, " --verbose")
+  }
+  if(createFasta){
+    command <- paste0(command, " --createFasta")
+  }
+  if(createAnnotatedNewickTree){
+    command <- paste0(command, " --createAnnotatedTree")
+  }
+  if(includeConsistentSitesInReport){
+    command <- paste0(command, " --includeConsistent")
+  }
+  
+  # Run the command
+  system(command, wait=TRUE)
+}
+
 #' Run HomoplasyFinder using Java code
 #'
 #' This function runs HomoplasyFinder (coded in Java) to identify positions that are potentially homoplasious
@@ -107,6 +172,29 @@
 #' @param verbose Flag to parse to HomoplasyFinder to request detailed information. Defaults to true
 #' @keywords homoplasyFinder java
 #' @export
+#' #' @examples
+#' # Find the FASTA and tree files attached to package
+#' fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
+#' treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
+#' 
+#' # Get the current working directory
+#' workingDirectory <- getwd()
+#' 
+#' # Run the HomoplasyFinder java code
+#' inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, path)
+#' 
+#' # Get the current date
+#' date <- format(Sys.Date(), "%d-%m-%y")
+#'  
+#' # Read in the output table
+#' resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt)
+#' results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
+#' 
+#' # Read in the annotated tree
+#' tree <- readAnnotatedTree(workingDirectory)
+#' 
+#' # Plot the annotated tree
+#' plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 runHomoplasyFinderInJava <- function(treeFile, fastaFile, path, 
                                      createFasta=TRUE,
                                      createReport=TRUE,
