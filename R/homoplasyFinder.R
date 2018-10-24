@@ -103,6 +103,7 @@
 #' @param createFasta Flag to tell HomoplasyFinder whether to create FASTA file without any inconsistent positions. Defaults to TRUE
 #' @param createReport Flag to tell HomoplasyFinder whether to create report file detailing the inconsistent sites identified. Defaults to TRUE
 #' @param createAnnotatedNewickTree Flag to tell HomoplasyFinder whether to create annotated Newick formatted phylogenetic tree file. Defaults to TRUE
+#' @param includeConsistentSitesInReport Flag to tell HomoplasyFinder whether to include information about the consistent sites in the report. Defaults to TRUE
 #' @param verbose Flag to parse to HomoplasyFinder to request detailed information. Defaults to true
 #' @keywords homoplasyFinder java
 #' @export
@@ -110,6 +111,7 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
                                      createFasta=TRUE,
                                      createReport=TRUE,
                                      createAnnotatedNewickTree=TRUE,
+                                     includeConsistentSitesInReport=FALSE,
                                      verbose=TRUE){
 
   # Add the java class path (path to the jar file in R package)
@@ -123,7 +125,8 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
                           method="runHomoplasyFinderFromR", # Method in Java class to be called
                           returnSig="[I", # The return type for the method
                           # Method arguments follow
-                          treeFile, fastaFile, path, createFasta, createReport, createAnnotatedNewickTree,
+                          treeFile, fastaFile, path, createFasta, createReport,
+                          createAnnotatedNewickTree, includeConsistentSitesInReport,
                           verbose)
   return(result)
 }

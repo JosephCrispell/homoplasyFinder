@@ -6,7 +6,7 @@
 \usage{
 runHomoplasyFinderInJava(treeFile, fastaFile, path, createFasta = TRUE,
   createReport = TRUE, createAnnotatedNewickTree = TRUE,
-  verbose = TRUE)
+  includeConsistentSitesInReport = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{treeFile}{The full path to the Newick formatted phylogenetic tree file}
@@ -20,6 +20,8 @@ runHomoplasyFinderInJava(treeFile, fastaFile, path, createFasta = TRUE,
 \item{createReport}{Flag to tell HomoplasyFinder whether to create report file detailing the inconsistent sites identified. Defaults to TRUE}
 
 \item{createAnnotatedNewickTree}{Flag to tell HomoplasyFinder whether to create annotated Newick formatted phylogenetic tree file. Defaults to TRUE}
+
+\item{includeConsistentSitesInReport}{Flag to tell HomoplasyFinder whether to include information about the consistent sites in the report. Defaults to TRUE}
 
 \item{verbose}{Flag to parse to HomoplasyFinder to request detailed information. Defaults to true}
 }
