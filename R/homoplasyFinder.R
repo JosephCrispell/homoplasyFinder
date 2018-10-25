@@ -102,7 +102,8 @@
 #' @param createFasta Flag to tell HomoplasyFinder whether to create FASTA file without any inconsistent positions. Defaults to TRUE
 #' @param createAnnotatedNewickTree Flag to tell HomoplasyFinder whether to create annotated Newick formatted phylogenetic tree file. Defaults to TRUE
 #' @param includeConsistentSitesInReport Flag to tell HomoplasyFinder whether to include information about the consistent sites in the report. Defaults to TRUE
-#' @param verbose Flag to parse to HomoplasyFinder to request detailed information. Defaults to true
+#' @param verbose Flag to tell HomoplasyFinder to request detailed information. Defaults to true
+#' @param multithread Flag to tell HomoplasyFinder to use multiple threads. Defaults to false
 #' @keywords homoplasyFinder java
 #' @export
 #' @examples
@@ -120,7 +121,7 @@
 #' workingDirectory <- getwd()
 #' 
 #' # Read in the output table
-#' resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt)
+#' resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt")
 #' results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
 #' 
 #' # Note the inconsistent positions
@@ -135,7 +136,7 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
                                       createFasta=TRUE,
                                       createAnnotatedNewickTree=TRUE,
                                       includeConsistentSitesInReport=FALSE,
-                                      verbose=TRUE){
+                                      verbose=TRUE, multithread=FALSE){
   
   # Note the location of the HomoplasyFinder jar file
   homoplasyFinderJar <- system.file("java", "HomoplasyFinder.jar", package = "homoplasyFinder")
@@ -154,6 +155,9 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
   if(includeConsistentSitesInReport){
     command <- paste0(command, " --includeConsistent")
   }
+  if(multithread){
+    command <- paste0(command, " --multithread")
+  }
   
   # Run the command
   system(command, wait=TRUE)
@@ -170,9 +174,10 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
 #' @param createAnnotatedNewickTree Flag to tell HomoplasyFinder whether to create annotated Newick formatted phylogenetic tree file. Defaults to TRUE
 #' @param includeConsistentSitesInReport Flag to tell HomoplasyFinder whether to include information about the consistent sites in the report. Defaults to TRUE
 #' @param verbose Flag to parse to HomoplasyFinder to request detailed information. Defaults to true
+#' @param multithread Flag to tell HomoplasyFinder to use multiple threads. Defaults to false
 #' @keywords homoplasyFinder java
 #' @export
-#' #' @examples
+#' @examples
 #' # Find the FASTA and tree files attached to package
 #' fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
 #' treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
@@ -187,7 +192,7 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
 #' date <- format(Sys.Date(), "%d-%m-%y")
 #'  
 #' # Read in the output table
-#' resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt)
+#' resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt")
 #' results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
 #' 
 #' # Read in the annotated tree
@@ -200,7 +205,7 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
                                      createReport=TRUE,
                                      createAnnotatedNewickTree=TRUE,
                                      includeConsistentSitesInReport=FALSE,
-                                     verbose=TRUE){
+                                     verbose=TRUE, multithread=TRUE){
 
   # Add the java class path (path to the jar file in R package)
   rJava::.jaddClassPath('inst/java/HomoplasyFinder.jar')
@@ -215,7 +220,7 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
                           # Method arguments follow
                           treeFile, fastaFile, path, createFasta, createReport,
                           createAnnotatedNewickTree, includeConsistentSitesInReport,
-                          verbose)
+                          verbose, multithread)
   return(result)
 }
 

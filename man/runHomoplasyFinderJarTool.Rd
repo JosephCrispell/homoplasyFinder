@@ -6,7 +6,8 @@
 \usage{
 runHomoplasyFinderJarTool(treeFile, fastaFile, createFasta = TRUE,
   createAnnotatedNewickTree = TRUE,
-  includeConsistentSitesInReport = FALSE, verbose = TRUE)
+  includeConsistentSitesInReport = FALSE, verbose = TRUE,
+  multithread = FALSE)
 }
 \arguments{
 \item{treeFile}{The full path to the Newick formatted phylogenetic tree file}
@@ -19,10 +20,39 @@ runHomoplasyFinderJarTool(treeFile, fastaFile, createFasta = TRUE,
 
 \item{includeConsistentSitesInReport}{Flag to tell HomoplasyFinder whether to include information about the consistent sites in the report. Defaults to TRUE}
 
-\item{verbose}{Flag to parse to HomoplasyFinder to request detailed information. Defaults to true}
+\item{verbose}{Flag to tell HomoplasyFinder to request detailed information. Defaults to true}
+
+\item{multithread}{Flag to tell HomoplasyFinder to use multiple threads. Defaults to false}
 }
 \description{
 This function runs HomoplasyFinder as a command line jar tool to identify positions that are potentially homoplasious. Output(s) will appear in current working directory.
+}
+\examples{
+# Find the FASTA and tree files attached to package
+fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
+treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
+
+# Run the HomoplasyFinder jar tool
+runHomosyFinderJarTool(treeFile, fastaFile)
+
+# Get the current date
+date <- format(Sys.Date(), "\%d-\%m-\%y")
+
+# Get the current working directory
+workingDirectory <- getwd()
+
+# Read in the output table
+resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt")
+results <- read.table(resultsFile, header=TRUE, sep="\\t", stringsAsFactors=FALSE)
+
+# Note the inconsistent positions
+inconsistentPositions <- results[results$ConsistencyIndex < 1, "Position"]
+
+# Read in the annotated tree
+tree <- readAnnotatedTree(workingDirectory)
+
+# Plot the annotated tree
+plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 }
 \keyword{homoplasyFinder}
 \keyword{java}
