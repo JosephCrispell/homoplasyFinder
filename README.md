@@ -28,10 +28,10 @@ inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDi
 date <- format(Sys.Date(), "%d-%m-%y")
 
 # Get the current working directory
-workingDirectory <- getwd()
+workingDirectory <- paste0(getwd(), "/")
  
 # Read in the output table
-resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt")
+resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
 results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
  
 # Read in the annotated tree
@@ -40,3 +40,5 @@ tree <- readAnnotatedTree(workingDirectory)
 # Plot the annotated tree
 plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 ```
+You should get the following plot:<br>
+<img src="inst/extdata/example.png">
