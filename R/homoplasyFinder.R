@@ -15,7 +15,6 @@
 ## Creating package
 #packageDirectory <- "/home/josephcrispell/Desktop/Research/Homoplasy/homoplasyFinder/"
 #create(packageDirectory)
-#setwd(packageDirectory)
 
 ## Documenting changes
 #setwd(packageDirectory)
