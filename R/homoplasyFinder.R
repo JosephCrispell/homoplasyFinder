@@ -117,10 +117,10 @@
 #' date <- format(Sys.Date(), "%d-%m-%y")
 #' 
 #' # Get the current working directory
-#' workingDirectory <- getwd()
+#' workingDirectory <- paste0(getwd(), "/")
 #' 
 #' # Read in the output table
-#' resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt")
+#' resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
 #' results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
 #' 
 #' # Note the inconsistent positions
@@ -182,7 +182,7 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
 #' treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
 #' 
 #' # Get the current working directory
-#' workingDirectory <- getwd()
+#' workingDirectory <- paste(getwd(), "/")
 #' 
 #' # Run the HomoplasyFinder java code
 #' inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
@@ -191,7 +191,7 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
 #' date <- format(Sys.Date(), "%d-%m-%y")
 #'  
 #' # Read in the output table
-#' resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt")
+#' resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
 #' results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
 #' 
 #' # Read in the annotated tree
@@ -236,16 +236,18 @@ readAnnotatedTree <- function(path, date=format(Sys.Date(), "%d-%m-%y")){
 
 #' Plotting HomoplasyFinder results
 #'
-#' This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder. Alignment colours: A=red, C=blue, G=cyan, and T=orange
+#' This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder. Alignment colours: A=red, C=blue, G=cyan, and T=orange. NOTE: Works best with addTextLabels() package installed.
 #' @param tree An object of class "phylo" produced by \code{readAnnotatedTree()}
 #' @param inconsistentPositions An integer array of the inconsistent positions identified by HomoplasyFinder. Produced by \code{runHomoplasyFinderInJava()}
 #' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
-#' @param addScale A boolean value to determine whether a scale is added to plot. Defaults to TRUE
-#' @param alignmentCex A multiplier value to change the size of the space alotted to plotting the homoplasy alignment. Defaults to 1
+#' @param addScale A boolean value to determine whether a scale is added to plot. Defaults to FALSE
+#' @param alignmentCex A multiplier value to change the size of the space alotted to plotting the homoplasy alignment. Defaults to 2
 #' @param addNodeLabels A multiplier value to change the size node labels. Defaults to 1
+#' @param nodeLabelCex A multiplier value to change the size of the internal node labels added to phylogeny. Defaults to 1
+#' @param alignmentPositionCex A multiplier value to change the size of the position labels added above alignment. Defaults to 0.5
 #' @keywords plot tree annotated
 #' @export
-plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=TRUE, alignmentCex=1, addNodeLabels=TRUE,
+plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=FALSE, alignmentCex=2, addNodeLabels=TRUE,
                               nodeLabelCex=1, alignmentPositionCex=0.5){
   
   # Get the current plotting margins - so that we can revert to these once finished
@@ -324,38 +326,70 @@ addInternalNodeLabels <- function(tree, cex){
   # Get the coordinates of the internal nodes
   internalNodeCoords <- getInternalNodeCoordinates(length(tree$tip.label))
   
-  # Add a label to each internal node
-  for(i in 1:length(tree$node.label)){
+  # Check if addTextLabels package installed
+  if(is.element("addTextLabels", installed.packages()[,1])){
     
-    # Skip internal nodes with no label
-    if(tree$node.label[i] == ""){
-      next
+    # Get the coordinates and labels for each internal node
+    xCoords <- c()
+    yCoords <- c()
+    labels <- c()
+    for(i in 1:length(tree$node.label)){
+      
+      # Skip internal nodes with no label
+      if(tree$node.label[i] == ""){
+        next
+      }
+      
+      # Get the coordinates of the current internal node
+      coords <- internalNodeCoords[i, ]
+      
+      # Create the label into the inconsistent positions
+      positions <- paste(strsplit(tree$node.label[i], split="-")[[1]], collapse=",")
+
+      # Store the coordinates and label
+      xCoords[length(xCoords) + 1] <- coords[1]
+      yCoords[length(yCoords) + 1] <- coords[2]
+      labels[length(labels) + 1] <- positions
     }
     
-    # Get the coordinates of the current internal node
-    coords <- internalNodeCoords[i, ]
+    # Add the labels
+    addTextLabels::addTextLabels(xCoords, yCoords, labels, col.label="white", col.line="red", 
+                                 col.background=rgb(0,0,0, 0.75), avoidPoints=FALSE)
     
-    # Create the label into the inconsistent positions
-    positions <- paste(strsplit(tree$node.label[i], split="-")[[1]], collapse=",")
-    
-    # Calculate the height and width of the label
-    labelHeight <- strheight(positions, cex=cex)
-    labelWidth <- strwidth(positions, cex=cex)
-    
-    # Add a background polygon
-    polygon(x=c(coords[1] - (labelWidth * 0.52),
-                coords[1] - (labelWidth * 0.52),
-                coords[1] + (labelWidth * 0.52),
-                coords[1] + (labelWidth * 0.52)),
-            y=c(coords[2] - (labelHeight * 0.6),
-                coords[2] + (labelHeight * 0.6),
-                coords[2] + (labelHeight * 0.6),
-                coords[2] - (labelHeight * 0.6)), 
-            col=rgb(0,0,0, 0.75),
-            border=NA)
-    
-    # Add each position at the current node
-    text(x=coords[1], y=coords[2], labels=positions[1], col=rgb(1,1,1), cex=cex)
+  }else{
+    # Add a label to each internal node
+    for(i in 1:length(tree$node.label)){
+      
+      # Skip internal nodes with no label
+      if(tree$node.label[i] == ""){
+        next
+      }
+      
+      # Get the coordinates of the current internal node
+      coords <- internalNodeCoords[i, ]
+      
+      # Create the label into the inconsistent positions
+      positions <- paste(strsplit(tree$node.label[i], split="-")[[1]], collapse=",")
+      
+      # Calculate the height and width of the label
+      labelHeight <- strheight(positions, cex=cex)
+      labelWidth <- strwidth(positions, cex=cex)
+      
+      # Add a background polygon
+      polygon(x=c(coords[1] - (labelWidth * 0.52),
+                  coords[1] - (labelWidth * 0.52),
+                  coords[1] + (labelWidth * 0.52),
+                  coords[1] + (labelWidth * 0.52)),
+              y=c(coords[2] - (labelHeight * 0.6),
+                  coords[2] + (labelHeight * 0.6),
+                  coords[2] + (labelHeight * 0.6),
+                  coords[2] - (labelHeight * 0.6)), 
+              col=rgb(0,0,0, 0.75),
+              border=NA)
+      
+      # Add each position at the current node
+      text(x=coords[1], y=coords[2], labels=positions[1], col=rgb(1,1,1), cex=cex)
+    }
   }
 }
 
@@ -481,7 +515,7 @@ addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositi
   
   # Note the positions of each homoplasy
   for(positionIndex in seq_along(inconsistentPositions)){
-    text(x=maxCoords[1] + ((positionIndex-1) * charWidth) + (0.5 * charWidth),
+    text(x=maxCoords[1] + ((positionIndex-0.25) * charWidth),
          y=maxCoords[2],
          labels=inconsistentPositions[positionIndex],
          cex=cex, srt=90, xpd=TRUE, pos=3)

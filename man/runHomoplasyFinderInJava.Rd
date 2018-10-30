@@ -37,7 +37,7 @@ fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder"
 treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
 
 # Get the current working directory
-workingDirectory <- getwd()
+workingDirectory <- paste(getwd(), "/")
 
 # Run the HomoplasyFinder java code
 inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
@@ -46,7 +46,7 @@ inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDi
 date <- format(Sys.Date(), "\%d-\%m-\%y")
  
 # Read in the output table
-resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt")
+resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
 results <- read.table(resultsFile, header=TRUE, sep="\\t", stringsAsFactors=FALSE)
 
 # Read in the annotated tree

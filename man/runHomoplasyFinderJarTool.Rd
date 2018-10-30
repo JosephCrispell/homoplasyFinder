@@ -39,10 +39,10 @@ runHomosyFinderJarTool(treeFile, fastaFile)
 date <- format(Sys.Date(), "\%d-\%m-\%y")
 
 # Get the current working directory
-workingDirectory <- getwd()
+workingDirectory <- paste0(getwd(), "/")
 
 # Read in the output table
-resultsFile <- paste0(workingDirectory, "/consistencyIndexReport_" + date + ".txt")
+resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
 results <- read.table(resultsFile, header=TRUE, sep="\\t", stringsAsFactors=FALSE)
 
 # Note the inconsistent positions

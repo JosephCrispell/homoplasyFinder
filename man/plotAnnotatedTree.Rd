@@ -5,7 +5,7 @@
 \title{Plotting HomoplasyFinder results}
 \usage{
 plotAnnotatedTree(tree, inconsistentPositions, fastaFile,
-  addScale = TRUE, alignmentCex = 1, addNodeLabels = TRUE,
+  addScale = FALSE, alignmentCex = 2, addNodeLabels = TRUE,
   nodeLabelCex = 1, alignmentPositionCex = 0.5)
 }
 \arguments{
@@ -15,14 +15,18 @@ plotAnnotatedTree(tree, inconsistentPositions, fastaFile,
 
 \item{fastaFile}{The full path to the FASTA formatted nucleotide sequence alignment}
 
-\item{addScale}{A boolean value to determine whether a scale is added to plot. Defaults to TRUE}
+\item{addScale}{A boolean value to determine whether a scale is added to plot. Defaults to FALSE}
 
-\item{alignmentCex}{A multiplier value to change the size of the space alotted to plotting the homoplasy alignment. Defaults to 1}
+\item{alignmentCex}{A multiplier value to change the size of the space alotted to plotting the homoplasy alignment. Defaults to 2}
 
 \item{addNodeLabels}{A multiplier value to change the size node labels. Defaults to 1}
+
+\item{nodeLabelCex}{A multiplier value to change the size of the internal node labels added to phylogeny. Defaults to 1}
+
+\item{alignmentPositionCex}{A multiplier value to change the size of the position labels added above alignment. Defaults to 0.5}
 }
 \description{
-This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder. Alignment colours: A=red, C=blue, G=cyan, and T=orange
+This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder. Alignment colours: A=red, C=blue, G=cyan, and T=orange. NOTE: Works best with addTextLabels() package installed.
 }
 \keyword{annotated}
 \keyword{plot}
