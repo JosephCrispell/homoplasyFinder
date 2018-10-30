@@ -17,6 +17,7 @@
 install.packages("devtools")
 library("devtools")
 install_github("JosephCrispell/homoplasyFinder")
+install_github("JosephCrispell/addTextLabels") # Optional but makes the annotated plotted phylogeny prettier :-)
 library(homoplasyFinder)
 ```
 
