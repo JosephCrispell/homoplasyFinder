@@ -3,7 +3,8 @@
 # HomoplasyFinder 
 ## Author: Joseph Crispell
 ## Licence: GPL-3
-## Requires: R (>= v3.3.3) & Java (>= v10.0.1)<br/><br/>
+## Requires: R (>= v3.3.3) & Java (>= v10.0.1)
+
 <br/><br/>
 
 ## Description
