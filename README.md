@@ -1,6 +1,5 @@
 <img align="left" src="HomoplasyFinder-logo.png">
 
-<br/>
 # HomoplasyFinder 
 ## Author: Joseph Crispell
 ## Licence: GPL-3
