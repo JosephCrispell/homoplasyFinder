@@ -204,7 +204,7 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
                                      createReport=TRUE,
                                      createAnnotatedNewickTree=TRUE,
                                      includeConsistentSitesInReport=FALSE,
-                                     verbose=TRUE, multithread=TRUE){
+                                     verbose=TRUE, multithread=FALSE){
 
   # Add the java class path (path to the jar file in R package)
   rJava::.jaddClassPath('inst/java/HomoplasyFinder.jar')

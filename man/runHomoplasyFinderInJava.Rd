@@ -7,7 +7,7 @@
 runHomoplasyFinderInJava(treeFile, fastaFile, path, createFasta = TRUE,
   createReport = TRUE, createAnnotatedNewickTree = TRUE,
   includeConsistentSitesInReport = FALSE, verbose = TRUE,
-  multithread = TRUE)
+  multithread = FALSE)
 }
 \arguments{
 \item{treeFile}{The full path to the Newick formatted phylogenetic tree file}
