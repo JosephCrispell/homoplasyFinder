@@ -1,0 +1,13 @@
+@article{
+	bibtype = "Manual",
+	title = {HomoplasyFinder: a simple tool to identify homoplasies on a phylogeny},
+	author = c(person("Joseph", "Crispell"),
+			   person("Joseph", "Crispell"),
+			   person("Joseph", "Crispell")),
+	doi = "10.1099/mgen.0.000245",
+	issn = "2057-5858",
+	journal = "Microbial Genomics",
+	publisher = "Microbiology Society",
+	url = "http://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000245.v1",
+	year = 2019
+}
