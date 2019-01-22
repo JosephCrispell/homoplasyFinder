@@ -48,3 +48,8 @@ plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 ```
 You should get the following plot:<br>
 <img src="inst/extdata/example.png">
+
+## Citation
+If you use *HomoplasyFinder* in your research, it would be great if you could cite the following article:
+Crispell, J., Balaz, D., & Gordon, S. V. (2019). HomoplasyFinder: a simple tool to identify homoplasies on a phylogeny. Microbial Genomics. [https://doi.org/10.1099/mgen.0.000245](https://doi.org/10.1099/mgen.0.000245)
+
