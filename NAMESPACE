@@ -1,5 +1,6 @@
 importFrom(rJava, .jnew, .jcall, .jpackage)
 
+export(runHomoplasyFinderJarTool)
 export(runHomoplasyFinderInJava)
 export(readAnnotatedTree)
 export(plotAnnotatedTree)

@@ -37,7 +37,7 @@ fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder"
 treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
 
 # Get the current working directory
-workingDirectory <- paste(getwd(), "/")
+workingDirectory <- paste0(getwd(), "/")
 
 # Run the HomoplasyFinder java code
 inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
