@@ -249,6 +249,29 @@ readAnnotatedTree <- function(path, date=format(Sys.Date(), "%d-%m-%y")){
 #' @param actualPositions An integer array of length=\code{length(inconsistentPositions)} that reports the actual positions on the genome of inconsistent positions. Useful when \code{homoplasyFinder} was run on concatenated sites. Defaults to \code{NULL} meaning it is ignored. 
 #' @keywords plot tree annotated
 #' @export
+#' @examples
+#' # Find the FASTA and tree files attached to package
+#' fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
+#' treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
+#' 
+#' # Get the current working directory
+#' workingDirectory <- paste0(getwd(), "/")
+#' 
+#' # Run the HomoplasyFinder java code
+#' inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
+#' 
+#' # Get the current date
+#' date <- format(Sys.Date(), "%d-%m-%y")
+#'  
+#' # Read in the output table
+#' resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
+#' results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
+#' 
+#' # Read in the annotated tree
+#' tree <- readAnnotatedTree(workingDirectory)
+#' 
+#' # Plot the annotated tree
+#' plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=FALSE, alignmentCex=2, addNodeLabels=TRUE,
                               nodeLabelCex=1, alignmentPositionCex=0.5, addSeparatorLines=TRUE, actualPositions=NULL){
   

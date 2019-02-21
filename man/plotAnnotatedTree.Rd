@@ -33,6 +33,30 @@ plotAnnotatedTree(tree, inconsistentPositions, fastaFile,
 \description{
 This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder. Alignment colours: A=red, C=blue, G=cyan, and T=orange. NOTE: Works best with addTextLabels() package installed.
 }
+\examples{
+# Find the FASTA and tree files attached to package
+fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
+treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
+
+# Get the current working directory
+workingDirectory <- paste0(getwd(), "/")
+
+# Run the HomoplasyFinder java code
+inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
+
+# Get the current date
+date <- format(Sys.Date(), "\%d-\%m-\%y")
+ 
+# Read in the output table
+resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
+results <- read.table(resultsFile, header=TRUE, sep="\\t", stringsAsFactors=FALSE)
+
+# Read in the annotated tree
+tree <- readAnnotatedTree(workingDirectory)
+
+# Plot the annotated tree
+plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
+}
 \keyword{annotated}
 \keyword{plot}
 \keyword{tree}
