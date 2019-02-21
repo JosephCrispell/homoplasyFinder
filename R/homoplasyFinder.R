@@ -248,7 +248,7 @@ readAnnotatedTree <- function(path, date=format(Sys.Date(), "%d-%m-%y")){
 #' @keywords plot tree annotated
 #' @export
 plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=FALSE, alignmentCex=2, addNodeLabels=TRUE,
-                              nodeLabelCex=1, alignmentPositionCex=0.5){
+                              nodeLabelCex=1, alignmentPositionCex=0.5, addSeparatorLines=TRUE){
   
   # Get the current plotting margins - so that we can revert to these once finished
   marginSettings <- par("mar")
@@ -272,7 +272,7 @@ plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=F
   }
 
   # Add an alignment detailing the nucleotides for each inconsistent position
-  addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions, alignmentPositionCex)
+  addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions, alignmentPositionCex, addSeparatorLines)
   
   # Revert the previous margin settings
   par("mar"= marginSettings)
@@ -463,7 +463,7 @@ addScaleBar <- function(){
 #' @param inconsistentPositions An integer array of the inconsistent positions identified by HomoplasyFinder. Produced by \code{runHomoplasyFinderInJava()}
 #' @param cex A multiplier value to change the size of position labels
 #' @keywords internal
-addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositions, cex){
+addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositions, cex, addSeparatorLines){
   
   # Get the axis Limits
   axisLimits <- par("usr")
@@ -494,23 +494,24 @@ addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositi
       sequence <- tipSequences[[tree$tip.label[tipIndex]]]
       
       # Plot a polygon for the current tip's nucleotide at the current homoplasy's position
-      polygon(x=c(maxCoords[1] + ((positionIndex-1) * charWidth),
-                  maxCoords[1] + ((positionIndex-1) * charWidth),
-                  maxCoords[1] + (positionIndex * charWidth),
-                  maxCoords[1] + (positionIndex * charWidth)),
-              y=c(xy[2]-0.5, xy[2] + 0.5, xy[2] + 0.5, xy[2]-0.5),
-              col=nucleotideColours[[sequence[inconsistentPositions[positionIndex]]]],
-              border=rgb(0,0,0,0), xpd=TRUE)
+      rect(xleft=maxCoords[1] + ((positionIndex-1) * charWidth),
+           ybottom=xy[2]-0.5,
+           xright=maxCoords[1] + (positionIndex * charWidth),
+           ytop=xy[2] + 0.5,
+           col=nucleotideColours[[sequence[inconsistentPositions[positionIndex]]]],
+           border=rgb(0,0,0,0), xpd=TRUE)
       
     }
   }
   
   # Add separator lines
-  for(positionIndex in seq_along(inconsistentPositions)){
-    points(x=c(maxCoords[1] + ((positionIndex-1) * charWidth),
-               maxCoords[1] + ((positionIndex-1) * charWidth)),
-           y=c(axisLimits[3], axisLimits[4]),
-           type="l", col="white", xpd=TRUE)
+  if(addSeparatorLines){
+    for(positionIndex in seq_along(inconsistentPositions)){
+      points(x=c(maxCoords[1] + ((positionIndex-1) * charWidth),
+                 maxCoords[1] + ((positionIndex-1) * charWidth)),
+             y=c(axisLimits[3], axisLimits[4]),
+             type="l", col="white", xpd=TRUE)
+    }
   }
   
   # Note the positions of each homoplasy

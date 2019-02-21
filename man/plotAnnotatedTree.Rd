@@ -6,7 +6,8 @@
 \usage{
 plotAnnotatedTree(tree, inconsistentPositions, fastaFile,
   addScale = FALSE, alignmentCex = 2, addNodeLabels = TRUE,
-  nodeLabelCex = 1, alignmentPositionCex = 0.5)
+  nodeLabelCex = 1, alignmentPositionCex = 0.5,
+  addSeparatorLines = TRUE)
 }
 \arguments{
 \item{tree}{An object of class "phylo" produced by \code{readAnnotatedTree()}}

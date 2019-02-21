@@ -5,7 +5,7 @@
 \title{Adds nucleotide alignment to right of plotted phylogenetic tree - nucleotides for inconsistent positions}
 \usage{
 addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions,
-  cex)
+  cex, addSeparatorLines)
 }
 \arguments{
 \item{tree}{An object of class "phylo" produced by \code{readAnnotatedTree()}}
