@@ -5,7 +5,7 @@
 \title{Adds nucleotide alignment to right of plotted phylogenetic tree - nucleotides for inconsistent positions}
 \usage{
 addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions,
-  cex, addSeparatorLines)
+  cex, addSeparatorLines, actualPositions)
 }
 \arguments{
 \item{tree}{An object of class "phylo" produced by \code{readAnnotatedTree()}}
@@ -15,6 +15,10 @@ addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions,
 \item{inconsistentPositions}{An integer array of the inconsistent positions identified by HomoplasyFinder. Produced by \code{runHomoplasyFinderInJava()}}
 
 \item{cex}{A multiplier value to change the size of position labels}
+
+\item{addSeparatorLines}{A boolean variable to determine whether white separator lines are plotted on alignment. Defaults to true}
+
+\item{actualPositions}{An integer array of length=\code{length(inconsistentPositions)} that reports the actual positions on the genome of inconsistent positions. Useful when \code{homoplasyFinder} was run on concatenated sites. Defaults to \code{NULL} meaning it is ignored.}
 }
 \description{
 Function used by \code{plotAnnotatedTree()}

@@ -7,7 +7,7 @@
 plotAnnotatedTree(tree, inconsistentPositions, fastaFile,
   addScale = FALSE, alignmentCex = 2, addNodeLabels = TRUE,
   nodeLabelCex = 1, alignmentPositionCex = 0.5,
-  addSeparatorLines = TRUE)
+  addSeparatorLines = TRUE, actualPositions = NULL)
 }
 \arguments{
 \item{tree}{An object of class "phylo" produced by \code{readAnnotatedTree()}}
@@ -25,6 +25,10 @@ plotAnnotatedTree(tree, inconsistentPositions, fastaFile,
 \item{nodeLabelCex}{A multiplier value to change the size of the internal node labels added to phylogeny. Defaults to 1}
 
 \item{alignmentPositionCex}{A multiplier value to change the size of the position labels added above alignment. Defaults to 0.5}
+
+\item{addSeparatorLines}{A boolean variable to determine whether white separator lines are plotted on alignment. Defaults to true}
+
+\item{actualPositions}{An integer array of length=\code{length(inconsistentPositions)} that reports the actual positions on the genome of inconsistent positions. Useful when \code{homoplasyFinder} was run on concatenated sites. Defaults to \code{NULL} meaning it is ignored.}
 }
 \description{
 This function plots an annotated phylogeny with the inconsistent sites identified by HomoplasyFinder. Alignment colours: A=red, C=blue, G=cyan, and T=orange. NOTE: Works best with addTextLabels() package installed.

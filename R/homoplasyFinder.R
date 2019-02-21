@@ -245,10 +245,12 @@ readAnnotatedTree <- function(path, date=format(Sys.Date(), "%d-%m-%y")){
 #' @param addNodeLabels A multiplier value to change the size node labels. Defaults to 1
 #' @param nodeLabelCex A multiplier value to change the size of the internal node labels added to phylogeny. Defaults to 1
 #' @param alignmentPositionCex A multiplier value to change the size of the position labels added above alignment. Defaults to 0.5
+#' @param addSeparatorLines A boolean variable to determine whether white separator lines are plotted on alignment. Defaults to true
+#' @param actualPositions An integer array of length=\code{length(inconsistentPositions)} that reports the actual positions on the genome of inconsistent positions. Useful when \code{homoplasyFinder} was run on concatenated sites. Defaults to \code{NULL} meaning it is ignored. 
 #' @keywords plot tree annotated
 #' @export
 plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=FALSE, alignmentCex=2, addNodeLabels=TRUE,
-                              nodeLabelCex=1, alignmentPositionCex=0.5, addSeparatorLines=TRUE){
+                              nodeLabelCex=1, alignmentPositionCex=0.5, addSeparatorLines=TRUE, actualPositions=NULL){
   
   # Get the current plotting margins - so that we can revert to these once finished
   marginSettings <- par("mar")
@@ -462,8 +464,10 @@ addScaleBar <- function(){
 #' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
 #' @param inconsistentPositions An integer array of the inconsistent positions identified by HomoplasyFinder. Produced by \code{runHomoplasyFinderInJava()}
 #' @param cex A multiplier value to change the size of position labels
+#' @param addSeparatorLines A boolean variable to determine whether white separator lines are plotted on alignment. Defaults to true
+#' @param actualPositions An integer array of length=\code{length(inconsistentPositions)} that reports the actual positions on the genome of inconsistent positions. Useful when \code{homoplasyFinder} was run on concatenated sites. Defaults to \code{NULL} meaning it is ignored. 
 #' @keywords internal
-addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositions, cex, addSeparatorLines){
+addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositions, cex, addSeparatorLines, actualPositions){
   
   # Get the axis Limits
   axisLimits <- par("usr")
@@ -500,7 +504,6 @@ addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositi
            ytop=xy[2] + 0.5,
            col=nucleotideColours[[sequence[inconsistentPositions[positionIndex]]]],
            border=rgb(0,0,0,0), xpd=TRUE)
-      
     }
   }
   
@@ -516,9 +519,17 @@ addInconsistentPositionAlignment <- function(tree, fastaFile, inconsistentPositi
   
   # Note the positions of each homoplasy
   for(positionIndex in seq_along(inconsistentPositions)){
+    
+    # Check if actual position available - mapped back to genome
+    position <- inconsistentPositions[positionIndex]
+    if(is.null(actualPositions) == FALSE){
+      position <- actualPositions[positionIndex]
+    }
+    
+    # Add the current position
     text(x=maxCoords[1] + ((positionIndex-0.25) * charWidth),
          y=maxCoords[2],
-         labels=inconsistentPositions[positionIndex],
+         labels=position,
          cex=cex, srt=90, xpd=TRUE, pos=3)
   }
 }
