@@ -274,7 +274,7 @@ plotAnnotatedTree <- function(tree, inconsistentPositions, fastaFile, addScale=F
   }
 
   # Add an alignment detailing the nucleotides for each inconsistent position
-  addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions, alignmentPositionCex, addSeparatorLines)
+  addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions, alignmentPositionCex, addSeparatorLines, actualPositions)
   
   # Revert the previous margin settings
   par("mar"= marginSettings)
