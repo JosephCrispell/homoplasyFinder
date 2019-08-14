@@ -28,7 +28,9 @@ fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder"
 treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
 
 # Run the HomoplasyFinder jar tool
-inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
+inconsistentPositions <- runHomoplasyFinderInJava(treeFile=treeFile, 
+                                                  fastaFile=fastaFile, 
+                                                  path=workingDirectory)
  
 # Get the current date
 date <- format(Sys.Date(), "%d-%m-%y")
@@ -53,3 +55,32 @@ You should get the following plot:<br>
 If you use *HomoplasyFinder* in your research, it would be great if you could cite the following article:
 Crispell, J., Balaz, D., & Gordon, S. V. (2019). HomoplasyFinder: a simple tool to identify homoplasies on a phylogeny. Microbial Genomics. [https://doi.org/10.1099/mgen.0.000245](https://doi.org/10.1099/mgen.0.000245)
 
+## Now extended to deal with the presence/absence of INDELs
+*HomoplasyFinder* can now calculate the consistency of INDELs (or any regions) on a phylogeny. To do this simply replace the FASTA file with a CSV formatted table reporting the presence/absence of regions. Here is an example of a format:
+```
+start,end,isolateA,isolateB,isolateC
+34802,35208,0,1,0
+39068,39069,0,0,1
+```
+
+Test it out using the following:
+```
+# Find the FASTA and tree files attached to package
+presenceAbsenceFile <- system.file("extdata", "presenceAbsence_INDELs.csv", package = "homoplasyFinder")
+treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
+
+# Run the HomoplasyFinder jar tool
+inconsistentPositions <- runHomoplasyFinderInJava(treeFile=treeFile, 
+                                                  presenceAbsenceFile=presenceAbsenceFile, 
+                                                  path=workingDirectory)
+ 
+# Get the current date
+date <- format(Sys.Date(), "%d-%m-%y")
+
+# Get the current working directory
+workingDirectory <- paste0(getwd(), "/")
+ 
+# Read in the output table
+resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
+results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
+```
