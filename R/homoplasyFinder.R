@@ -227,7 +227,7 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
 #'
 #' This function runs reads in the annotated Newick formatted phylogenetic tree file produced by HomoplasyFinder. Node labels of tree report where changes occured for inconsistent positions ("-" separated)
 #' @param path The full path to the directory where the output files were created (must match what was used for \code{runHomoplasyFinderInJava()})
-#' @param date Date \code{runHomoplasyFinderInJava()} was ran. Format: "%d-%m-%y". Defaults to today.
+#' @param date Date \code{runHomoplasyFinderInJava()} was ran. Format: "\%d-\%m-\%y". Defaults to today.
 #' @keywords tree newick annotated
 #' @export
 readAnnotatedTree <- function(path, date=format(Sys.Date(), "%d-%m-%y")){

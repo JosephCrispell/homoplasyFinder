@@ -9,7 +9,7 @@ readAnnotatedTree(path, date = format(Sys.Date(), "\%d-\%m-\%y"))
 \arguments{
 \item{path}{The full path to the directory where the output files were created (must match what was used for \code{runHomoplasyFinderInJava()})}
 
-\item{date}{Date \code{runHomoplasyFinderInJava()} was ran. Format: "%d-%m-%y". Defaults to today.}
+\item{date}{Date \code{runHomoplasyFinderInJava()} was ran. Format: "\%d-\%m-\%y". Defaults to today.}
 }
 \description{
 This function runs reads in the annotated Newick formatted phylogenetic tree file produced by HomoplasyFinder. Node labels of tree report where changes occured for inconsistent positions ("-" separated)
