@@ -4,7 +4,8 @@
 \alias{runHomoplasyFinderInJava}
 \title{Run HomoplasyFinder using Java code}
 \usage{
-runHomoplasyFinderInJava(treeFile, fastaFile, path, createFasta = TRUE,
+runHomoplasyFinderInJava(treeFile, fastaFile = "Not provided",
+  presenceAbsenceFile = "Not provided", path, createFasta = TRUE,
   createReport = TRUE, createAnnotatedNewickTree = TRUE,
   includeConsistentSitesInReport = FALSE, verbose = TRUE,
   multithread = FALSE)
@@ -12,7 +13,9 @@ runHomoplasyFinderInJava(treeFile, fastaFile, path, createFasta = TRUE,
 \arguments{
 \item{treeFile}{The full path to the Newick formatted phylogenetic tree file}
 
-\item{fastaFile}{The full path to the FASTA formatted nucleotide sequence alignment}
+\item{fastaFile}{The full path to a FASTA formatted nucleotide sequence alignment. Defaults to "Not provided"}
+
+\item{presenceAbsenceFile}{The full path to a CSV table file reporting the presence/absence of INDELs. Defaults to "Not provided"}
 
 \item{path}{The full path to the directory where the output files will be created}
 

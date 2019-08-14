@@ -97,7 +97,8 @@
 #'
 #' This function runs HomoplasyFinder as a command line jar tool to identify positions that are potentially homoplasious. Output(s) will appear in current working directory.
 #' @param treeFile The full path to the Newick formatted phylogenetic tree file
-#' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
+#' @param fastaFile The full path to a FASTA formatted nucleotide sequence alignment. Defaults to NULL
+#' @param presenceAbsenceFile The full path to a CSV table file reporting the presence/absence of INDELs. Defaults to NULL
 #' @param createFasta Flag to tell HomoplasyFinder whether to create FASTA file without any inconsistent positions. Defaults to TRUE
 #' @param createAnnotatedNewickTree Flag to tell HomoplasyFinder whether to create annotated Newick formatted phylogenetic tree file. Defaults to TRUE
 #' @param includeConsistentSitesInReport Flag to tell HomoplasyFinder whether to include information about the consistent sites in the report. Defaults to TRUE
@@ -131,7 +132,7 @@
 #' 
 #' # Plot the annotated tree
 #' plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
-runHomoplasyFinderJarTool <- function(treeFile, fastaFile,  
+runHomoplasyFinderJarTool <- function(treeFile, fastaFile=NULL, presenceAbsenceFile=NULL,  
                                       createFasta=TRUE,
                                       createAnnotatedNewickTree=TRUE,
                                       includeConsistentSitesInReport=FALSE,
@@ -141,7 +142,13 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
   homoplasyFinderJar <- system.file("java", "HomoplasyFinder.jar", package = "homoplasyFinder")
   
   # Build the command to be used
-  command <- paste0("java -jar ", homoplasyFinderJar, " --fasta ", fastaFile, " --tree ", treeFile)
+  command <- paste0("java -jar ", homoplasyFinderJar, " --tree ", treeFile)
+  if(is.null(fastaFile) == FALSE){
+    command <- paste0(command, " --fasta ", fastaFile)
+  }
+  if(is.null(presenceAbsenceFile) == FALSE){
+    command <- paste0(command, " --presenceAbsence ", presenceAbsenceFile)
+  }
   if(verbose){
     command <- paste0(command, " --verbose")
   }
@@ -167,7 +174,8 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
 #' This function runs HomoplasyFinder (coded in Java) to identify positions that are potentially homoplasious
 #' @param path The full path to the directory where the output files will be created
 #' @param treeFile The full path to the Newick formatted phylogenetic tree file
-#' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
+#' @param fastaFile The full path to a FASTA formatted nucleotide sequence alignment. Defaults to "Not provided"
+#' @param presenceAbsenceFile The full path to a CSV table file reporting the presence/absence of INDELs. Defaults to "Not provided"
 #' @param createFasta Flag to tell HomoplasyFinder whether to create FASTA file without any inconsistent positions. Defaults to TRUE
 #' @param createReport Flag to tell HomoplasyFinder whether to create report file detailing the inconsistent sites identified. Defaults to TRUE
 #' @param createAnnotatedNewickTree Flag to tell HomoplasyFinder whether to create annotated Newick formatted phylogenetic tree file. Defaults to TRUE
@@ -199,7 +207,7 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile,
 #' 
 #' # Plot the annotated tree
 #' plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
-runHomoplasyFinderInJava <- function(treeFile, fastaFile, path, 
+runHomoplasyFinderInJava <- function(treeFile, fastaFile="Not provided", presenceAbsenceFile="Not provided", path, 
                                      createFasta=TRUE,
                                      createReport=TRUE,
                                      createAnnotatedNewickTree=TRUE,
@@ -217,7 +225,7 @@ runHomoplasyFinderInJava <- function(treeFile, fastaFile, path,
                           method="runHomoplasyFinderFromR", # Method in Java class to be called
                           returnSig="[I", # The return type for the method
                           # Method arguments follow
-                          treeFile, fastaFile, path, createFasta, createReport,
+                          treeFile, fastaFile, presenceAbsenceFile, path, createFasta, createReport,
                           createAnnotatedNewickTree, includeConsistentSitesInReport,
                           verbose, multithread)
   return(result)

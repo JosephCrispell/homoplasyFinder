@@ -4,7 +4,8 @@
 \alias{runHomoplasyFinderJarTool}
 \title{Run HomoplasyFinder using Java jar file. Use if you can't get rJava to install properly :-)}
 \usage{
-runHomoplasyFinderJarTool(treeFile, fastaFile, createFasta = TRUE,
+runHomoplasyFinderJarTool(treeFile, fastaFile = NULL,
+  presenceAbsenceFile = NULL, createFasta = TRUE,
   createAnnotatedNewickTree = TRUE,
   includeConsistentSitesInReport = FALSE, verbose = TRUE,
   multithread = FALSE)
@@ -12,7 +13,9 @@ runHomoplasyFinderJarTool(treeFile, fastaFile, createFasta = TRUE,
 \arguments{
 \item{treeFile}{The full path to the Newick formatted phylogenetic tree file}
 
-\item{fastaFile}{The full path to the FASTA formatted nucleotide sequence alignment}
+\item{fastaFile}{The full path to a FASTA formatted nucleotide sequence alignment. Defaults to NULL}
+
+\item{presenceAbsenceFile}{The full path to a CSV table file reporting the presence/absence of INDELs. Defaults to NULL}
 
 \item{createFasta}{Flag to tell HomoplasyFinder whether to create FASTA file without any inconsistent positions. Defaults to TRUE}
 
