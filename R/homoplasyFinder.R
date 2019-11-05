@@ -24,37 +24,6 @@
 #setwd("..")
 #install("homoplasyFinder")
 
-## !!! Wrapping Jar file !!! THIS SEEMS TO BE HIGHLY TEMPERMENTAL!!
-# 1) Create JAR file in eclipse:
-#     - Right click on containing package of all necessary java classes -> Export -> JAR file -> Next
-#     - Select 
-#         .classpath
-#         .project
-#         "Export generated class files..."
-#         "Export Java source files..."
-#         "Compress the contents of the JAR file"
-#         "Add directory entries"
-#     - Click Next -> Select
-#         "Export class files with compile errors"
-#         "Export class files with compile warnings"
-#     - Click Next -> Select
-#         "Generate the manifest file"
-#         Main class: [Java class to be interacted with]
-#     - Click Finish
-# 2) In R package make the following additions (after creating with roxygen):
-#     - JAR file should be stored in /inst/java/
-#     - Add following lines to DESCRIPTION:
-#         Depends: rJava (>= 0.9-6) # separate dependencies by ", "
-#         Imports: rJava # separate imports by ", "
-#         SystemRequirements: Java (>= 1.5)
-#     - Add onLoad.R script into /R/:
-#         .onLoad <- function(libname, pkgname) {
-#           .jpackage(pkgname, lib.loc = libname)
-#         }
-#     - Add following line to NAMESPACE:
-#         importFrom(rJava, .jnew, .jcall, .jpackage)
-# 3) Create an R function to interact with JAR file.
-# 
 # NOTE: Everytime the JAR file is changed you need to:
 #   - Replace JAR in R package directory /inst/jar/
 #   - If R open, clear workspace, terminal and close without saving
@@ -359,8 +328,8 @@ addInternalNodeLabels <- function(tree, cex){
   # Get the coordinates of the internal nodes
   internalNodeCoords <- getInternalNodeCoordinates(length(tree$tip.label))
   
-  # Check if addTextLabels package installed
-  if(is.element("addTextLabels", installed.packages()[,1])){
+  # Check if basicPlotteR package installed
+  if(is.element("basicPlotteR", installed.packages()[,1])){
     
     # Get the coordinates and labels for each internal node
     xCoords <- c()
@@ -386,8 +355,8 @@ addInternalNodeLabels <- function(tree, cex){
     }
     
     # Add the labels
-    addTextLabels::addTextLabels(xCoords, yCoords, labels, col.label="white", col.line="red", 
-                                 col.background=rgb(0,0,0, 0.75), avoidPoints=FALSE)
+    basicPlotteR::addTextLabels(xCoords, yCoords, labels, col.label="white", col.line="red", 
+                                col.background=rgb(0,0,0, 0.75), avoidPoints=FALSE)
     
   }else{
     # Add a label to each internal node
@@ -426,7 +395,7 @@ addInternalNodeLabels <- function(tree, cex){
   }
 }
 
-#' REads in FASTA file and records which sequences is associated with each tip label
+#' Reads in FASTA file and records which sequences is associated with each tip label
 #' 
 #' Function used by \code{plotAnnotatedTree()}
 #' @param fastaFile The full path to the FASTA formatted nucleotide sequence alignment
