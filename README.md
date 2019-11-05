@@ -15,9 +15,8 @@
 ## Installation
 ```
 install.packages("devtools")
-library("devtools")
-install_github("JosephCrispell/homoplasyFinder")
-install_github("JosephCrispell/addTextLabels") # Makes annotated plotted phylogeny prettier :-)
+devtools::install_github("JosephCrispell/homoplasyFinder")
+devtools::install_github("JosephCrispell/basicPlotteR") # Makes annotated plotted phylogeny prettier :-)
 library(homoplasyFinder)
 ```
 
@@ -27,6 +26,9 @@ library(homoplasyFinder)
 fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
 treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
 
+# Get the current working directory
+workingDirectory <- paste0(getwd(), "/")
+
 # Run the HomoplasyFinder jar tool
 inconsistentPositions <- runHomoplasyFinderInJava(treeFile=treeFile, 
                                                   fastaFile=fastaFile, 
@@ -34,9 +36,6 @@ inconsistentPositions <- runHomoplasyFinderInJava(treeFile=treeFile,
  
 # Get the current date
 date <- format(Sys.Date(), "%d-%m-%y")
-
-# Get the current working directory
-workingDirectory <- paste0(getwd(), "/")
  
 # Read in the output table
 resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
@@ -69,6 +68,9 @@ Test it out using the following:
 presenceAbsenceFile <- system.file("extdata", "presenceAbsence_INDELs.csv", package = "homoplasyFinder")
 treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
 
+# Get the current working directory
+workingDirectory <- paste0(getwd(), "/")
+
 # Run the HomoplasyFinder jar tool
 inconsistentPositions <- runHomoplasyFinderInJava(treeFile=treeFile, 
                                                   presenceAbsenceFile=presenceAbsenceFile, 
@@ -76,9 +78,6 @@ inconsistentPositions <- runHomoplasyFinderInJava(treeFile=treeFile,
  
 # Get the current date
 date <- format(Sys.Date(), "%d-%m-%y")
-
-# Get the current working directory
-workingDirectory <- paste0(getwd(), "/")
  
 # Read in the output table
 resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
