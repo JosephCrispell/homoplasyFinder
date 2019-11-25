@@ -4,8 +4,14 @@
 \alias{addInconsistentPositionAlignment}
 \title{Adds nucleotide alignment to right of plotted phylogenetic tree - nucleotides for inconsistent positions}
 \usage{
-addInconsistentPositionAlignment(tree, fastaFile, inconsistentPositions,
-  cex, addSeparatorLines, actualPositions)
+addInconsistentPositionAlignment(
+  tree,
+  fastaFile,
+  inconsistentPositions,
+  cex,
+  addSeparatorLines,
+  actualPositions
+)
 }
 \arguments{
 \item{tree}{An object of class "phylo" produced by \code{readAnnotatedTree()}}

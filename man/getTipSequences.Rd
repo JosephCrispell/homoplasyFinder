@@ -2,7 +2,7 @@
 % Please edit documentation in R/homoplasyFinder.R
 \name{getTipSequences}
 \alias{getTipSequences}
-\title{REads in FASTA file and records which sequences is associated with each tip label}
+\title{Reads in FASTA file and records which sequences is associated with each tip label}
 \usage{
 getTipSequences(fastaFile)
 }

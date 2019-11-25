@@ -13,7 +13,7 @@
 #library("roxygen2")
 
 ## Creating package
-#packageDirectory <- "/home/josephcrispell/Desktop/Research/Homoplasy/homoplasyFinder/"
+#packageDirectory <- "/home/josephcrispell/storage/Research/Homoplasy/homoplasyFinder/"
 #create(packageDirectory)
 
 ## Documenting changes
@@ -79,7 +79,7 @@
 #' # Find the FASTA and tree files attached to package
 #' fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
 #' treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
-#' 
+#' Let me know if you have any problems with the above.
 #' # Run the HomoplasyFinder jar tool
 #' runHomosyFinderJarTool(treeFile, fastaFile)
 #' 
@@ -162,7 +162,7 @@ runHomoplasyFinderJarTool <- function(treeFile, fastaFile=NULL, presenceAbsenceF
 #' workingDirectory <- paste0(getwd(), "/")
 #' 
 #' # Run the HomoplasyFinder java code
-#' inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
+#' inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, path=workingDirectory)
 #' 
 #' # Get the current date
 #' date <- format(Sys.Date(), "%d-%m-%y")

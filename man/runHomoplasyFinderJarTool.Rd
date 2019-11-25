@@ -4,11 +4,16 @@
 \alias{runHomoplasyFinderJarTool}
 \title{Run HomoplasyFinder using Java jar file. Use if you can't get rJava to install properly :-)}
 \usage{
-runHomoplasyFinderJarTool(treeFile, fastaFile = NULL,
-  presenceAbsenceFile = NULL, createFasta = TRUE,
+runHomoplasyFinderJarTool(
+  treeFile,
+  fastaFile = NULL,
+  presenceAbsenceFile = NULL,
+  createFasta = TRUE,
   createAnnotatedNewickTree = TRUE,
-  includeConsistentSitesInReport = FALSE, verbose = TRUE,
-  multithread = FALSE)
+  includeConsistentSitesInReport = FALSE,
+  verbose = TRUE,
+  multithread = FALSE
+)
 }
 \arguments{
 \item{treeFile}{The full path to the Newick formatted phylogenetic tree file}
@@ -34,7 +39,7 @@ This function runs HomoplasyFinder as a command line jar tool to identify positi
 # Find the FASTA and tree files attached to package
 fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
 treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
-
+Let me know if you have any problems with the above.
 # Run the HomoplasyFinder jar tool
 runHomosyFinderJarTool(treeFile, fastaFile)
 

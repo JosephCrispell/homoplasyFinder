@@ -4,11 +4,18 @@
 \alias{runHomoplasyFinderInJava}
 \title{Run HomoplasyFinder using Java code}
 \usage{
-runHomoplasyFinderInJava(treeFile, fastaFile = "Not provided",
-  presenceAbsenceFile = "Not provided", path, createFasta = TRUE,
-  createReport = TRUE, createAnnotatedNewickTree = TRUE,
-  includeConsistentSitesInReport = FALSE, verbose = TRUE,
-  multithread = FALSE)
+runHomoplasyFinderInJava(
+  treeFile,
+  fastaFile = "Not provided",
+  presenceAbsenceFile = "Not provided",
+  path,
+  createFasta = TRUE,
+  createReport = TRUE,
+  createAnnotatedNewickTree = TRUE,
+  includeConsistentSitesInReport = FALSE,
+  verbose = TRUE,
+  multithread = FALSE
+)
 }
 \arguments{
 \item{treeFile}{The full path to the Newick formatted phylogenetic tree file}
@@ -43,7 +50,7 @@ treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
 workingDirectory <- paste0(getwd(), "/")
 
 # Run the HomoplasyFinder java code
-inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, workingDirectory)
+inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, path=workingDirectory)
 
 # Get the current date
 date <- format(Sys.Date(), "\%d-\%m-\%y")

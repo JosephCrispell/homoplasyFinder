@@ -4,10 +4,18 @@
 \alias{plotAnnotatedTree}
 \title{Plotting HomoplasyFinder results}
 \usage{
-plotAnnotatedTree(tree, inconsistentPositions, fastaFile,
-  addScale = FALSE, alignmentCex = 2, addNodeLabels = TRUE,
-  nodeLabelCex = 1, alignmentPositionCex = 0.5,
-  addSeparatorLines = TRUE, actualPositions = NULL)
+plotAnnotatedTree(
+  tree,
+  inconsistentPositions,
+  fastaFile,
+  addScale = FALSE,
+  alignmentCex = 2,
+  addNodeLabels = TRUE,
+  nodeLabelCex = 1,
+  alignmentPositionCex = 0.5,
+  addSeparatorLines = TRUE,
+  actualPositions = NULL
+)
 }
 \arguments{
 \item{tree}{An object of class "phylo" produced by \code{readAnnotatedTree()}}
