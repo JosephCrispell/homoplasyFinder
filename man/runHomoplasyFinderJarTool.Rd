@@ -39,9 +39,9 @@ This function runs HomoplasyFinder as a command line jar tool to identify positi
 # Find the FASTA and tree files attached to package
 fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
 treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
-Let me know if you have any problems with the above.
+
 # Run the HomoplasyFinder jar tool
-runHomosyFinderJarTool(treeFile, fastaFile)
+runHomoplasyFinderJarTool(treeFile, fastaFile)
 
 # Get the current date
 date <- format(Sys.Date(), "\%d-\%m-\%y")
