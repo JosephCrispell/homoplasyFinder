@@ -57,7 +57,7 @@ date <- format(Sys.Date(), "\%d-\%m-\%y")
  
 # Read in the output table
 resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
-results <- read.table(resultsFile, header=TRUE, sep="\\t", stringsAsFactors=FALSE)
+results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
 
 # Read in the annotated tree
 tree <- readAnnotatedTree(workingDirectory)

@@ -62,6 +62,73 @@
 # tree <- readAnnotatedTree(path)
 # plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 
+#' Run HomoplasyFinder using Java code
+#'
+#' This function runs HomoplasyFinder (coded in Java) to identify positions that are potentially homoplasious
+#' @param results A data.frame object produced by reading in the \code{homoplasyFinder} output file produced by \code{runHomoplasyFinderInJava} or \code{runHomoplasyFinderJarTool}
+#' @param fastaFile The full path to a FASTA formatted nucleotide sequence alignment. Defaults to "Not provided"
+#' @return A list containing information about each site reported in the \code{results} table
+#' @keywords homoplasyFinder results sites
+#' @export
+#' @examples
+#' # Find the FASTA and tree files attached to package
+#' fastaFile <- system.file("extdata", "example.fasta", package = "homoplasyFinder")
+#' treeFile <- system.file("extdata", "example.tree", package = "homoplasyFinder")
+#' 
+#' # Get the current working directory
+#' workingDirectory <- paste0(getwd(), "/")
+#' 
+#' # Run the HomoplasyFinder java code
+#' inconsistentPositions <- runHomoplasyFinderInJava(treeFile, fastaFile, path=workingDirectory)
+#' 
+#' # Get the current date
+#' date <- format(Sys.Date(), "%d-%m-%y")
+#'  
+#' # Read in the output table
+#' resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
+#' results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
+#' 
+#' # Get the site information
+#' siteInfo <- assignSiteAlleles(results, fastaFile)
+#' 
+#' # Get the information for the first site
+#' siteInfo[[1]]
+assignSiteAlleles <- function(results, fastaFile){
+  
+  # Read in the fasta file
+  sequences <- ape::read.dna(fastaFile, format="fasta", as.character=TRUE)
+  samples <- rownames(sequences)
+  
+  # Initialise a list to store the samples of each allele at each position
+  siteInfo <- list()
+  
+  # Examine each of the positions in the results table
+  for(row in 1:nrow(results)){
+    
+    # Get the current position
+    position <- results[row, "Position"]
+    key <- as.character(position)
+    siteInfo[[key]]$Position <- position
+    
+    # Store the information already known
+    siteInfo[[key]]$ConsistencyIndex <- results[row, "ConsistencyIndex"]
+    siteInfo[[key]]$MinimumNumberChangesOnTree <- results[row, "MinimumNumberChangesOnTree"]
+    
+    # Store the allele counts
+    counts <- as.list(as.numeric(strsplit(results[row, "CountsACGT"], split=":")[[1]]))
+    names(counts) <- c("A", "C", "G", "T")
+    siteInfo[[key]]$Counts <- counts
+    
+    # Initialise a list to store the sample IDs with each allele
+    siteInfo[[key]]$Samples <- list("A"=samples[sequences[, position] == "a"],
+                                    "C"=samples[sequences[, position] == "c"],
+                                    "G"=samples[sequences[, position] == "g"],
+                                    "T"=samples[sequences[, position] == "t"])
+  }
+  
+  return(siteInfo)
+}
+
 #' Run HomoplasyFinder using Java jar file. Use if you can't get rJava to install properly :-)
 #'
 #' This function runs HomoplasyFinder as a command line jar tool to identify positions that are potentially homoplasious. Output(s) will appear in current working directory.

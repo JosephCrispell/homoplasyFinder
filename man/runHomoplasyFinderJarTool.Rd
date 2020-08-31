@@ -51,7 +51,7 @@ workingDirectory <- paste0(getwd(), "/")
 
 # Read in the output table
 resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
-results <- read.table(resultsFile, header=TRUE, sep="\\t", stringsAsFactors=FALSE)
+results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
 
 # Note the inconsistent positions
 inconsistentPositions <- results[results$ConsistencyIndex < 1, "Position"]
