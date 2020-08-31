@@ -2,7 +2,7 @@
 % Please edit documentation in R/homoplasyFinder.R
 \name{assignSiteAlleles}
 \alias{assignSiteAlleles}
-\title{Run HomoplasyFinder using Java code}
+\title{Extract site information}
 \usage{
 assignSiteAlleles(results, fastaFile)
 }
@@ -15,7 +15,7 @@ assignSiteAlleles(results, fastaFile)
 A list containing information about each site reported in the \code{results} table
 }
 \description{
-This function runs HomoplasyFinder (coded in Java) to identify positions that are potentially homoplasious
+This function will gather information about each of the positions reported in the results table outputted by \code{homoplasyFinder}
 }
 \examples{
 # Find the FASTA and tree files attached to package

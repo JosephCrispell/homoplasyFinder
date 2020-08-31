@@ -62,9 +62,9 @@
 # tree <- readAnnotatedTree(path)
 # plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 
-#' Run HomoplasyFinder using Java code
+#' Extract site information
 #'
-#' This function runs HomoplasyFinder (coded in Java) to identify positions that are potentially homoplasious
+#' This function will gather information about each of the positions reported in the results table outputted by \code{homoplasyFinder}
 #' @param results A data.frame object produced by reading in the \code{homoplasyFinder} output file produced by \code{runHomoplasyFinderInJava} or \code{runHomoplasyFinderJarTool}
 #' @param fastaFile The full path to a FASTA formatted nucleotide sequence alignment. Defaults to "Not provided"
 #' @return A list containing information about each site reported in the \code{results} table
