@@ -50,10 +50,6 @@ plotAnnotatedTree(tree, inconsistentPositions, fastaFile)
 You should get the following plot:<br>
 <img src="inst/extdata/example.png">
 
-## Citation
-If you use *HomoplasyFinder* in your research, it would be great if you could cite the following article:
-Crispell, J., Balaz, D., & Gordon, S. V. (2019). HomoplasyFinder: a simple tool to identify homoplasies on a phylogeny. Microbial Genomics. [https://doi.org/10.1099/mgen.0.000245](https://doi.org/10.1099/mgen.0.000245)
-
 ## Now extended to deal with the presence/absence of INDELs
 *HomoplasyFinder* can now calculate the consistency of INDELs (or any regions) on a phylogeny. To do this simply replace the FASTA file with a CSV formatted table reporting the presence/absence of regions. Here is an example of a format:
 ```
@@ -83,3 +79,10 @@ date <- format(Sys.Date(), "%d-%m-%y")
 resultsFile <- paste0(workingDirectory, "consistencyIndexReport_", date, ".txt")
 results <- read.table(resultsFile, header=TRUE, sep="\t", stringsAsFactors=FALSE)
 ```
+
+## Source code
+Java source code is available [here](https://github.com/JosephCrispell/Java/tree/master/HomoplasyFinder/src/homoplasyFinder) and R package (wrapper) code [here](https://github.com/JosephCrispell/homoplasyFinder).
+
+## Citation
+If you use *HomoplasyFinder* in your research, it would be great if you could cite the following article:
+Crispell, J., Balaz, D., & Gordon, S. V. (2019). HomoplasyFinder: a simple tool to identify homoplasies on a phylogeny. Microbial Genomics. [https://doi.org/10.1099/mgen.0.000245](https://doi.org/10.1099/mgen.0.000245)
