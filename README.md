@@ -1,3 +1,5 @@
+[![GitHub stars](https://img.shields.io/github/stars/borisdayma/huggingtweets?style=social)](https://github.com/JosephCrispell/homoplasyFinder/)
+
 <img align="left" src="HomoplasyFinder-logo.png">
 
 <br/>
