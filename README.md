@@ -1,4 +1,4 @@
-[![GitHub stars](https://github.com/JosephCrispell/homoplasyFinder?style=social)](https://github.com/JosephCrispell/homoplasyFinder)
+[![GitHub stars](https://img.shields.io/github/stars/JosephCrispell/homoplasyFinder?style=social)](https://github.com/JosephCrispell/homoplasyFinder)
 
 <img align="left" src="HomoplasyFinder-logo.png">
 
